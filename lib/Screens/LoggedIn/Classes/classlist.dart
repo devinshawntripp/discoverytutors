@@ -42,11 +42,6 @@ class _ClassListState extends State<ClassList> {
                             ),
                         transitionToChild: true));
               },
-              // child: ClassTile(
-              //   classname: widget.data[index].classname,
-              //   description: widget.data[index].classdescription,
-              //   classcode: widget.data[index].documentID,
-              // ),
               child: widget.data == null
                   ? Loading
                   : ClassTile(

@@ -54,7 +54,7 @@ class _ClassPageState extends State<ClassPage> {
               widget.data.preq == null
                   ? Text("")
                   : Container(
-                      color: Colors.blue,
+                      color: Colors.white,
                       child: Column(
                         children: <Widget>[
                           Container(
@@ -74,10 +74,23 @@ class _ClassPageState extends State<ClassPage> {
                                     itemCount: widget.data.preq.length,
                                     itemBuilder: (context, index) {
                                       return Container(
-                                        padding: EdgeInsets.only(left: 5),
-                                        child: Text(
-                                          widget.data.preq[index].classname,
-                                          style: TextStyle(color: Colors.red),
+                                        margin: EdgeInsets.only(left: 5),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          child: Container(
+                                            color: Colors.blue,
+                                            padding: EdgeInsets.all(5),
+                                            child: Center(
+                                              child: Text(
+                                                widget
+                                                    .data.preq[index].classname,
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       );
                                     }),

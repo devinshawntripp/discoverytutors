@@ -16,14 +16,7 @@ class _AllClassesState extends State<AllClasses> {
   @override
   void initState() {
     Provider.of<ClassDataNotifier>(context, listen: false).getTheClasses();
-    // final user = Provider.of<User>(context);
-    // getTheClasses(classdatanotif);
 
-    // var u = FirebaseAuth.instance.currentUser();
-    // u.then((value) {
-    //   getData(value.uid);
-    //   // print("DKJFLD HDEKJF");
-    // });
     super.initState();
   }
 
@@ -45,10 +38,8 @@ class _AllClassesState extends State<AllClasses> {
 
   @override
   Widget build(BuildContext context) {
-    // ClassDataNotifier classdatanotif = Provider.of<ClassDataNotifier>(context);
     final d = context.watch<ClassDataNotifier>();
 
-    // List<ClassData> cData = Provider.of<List<ClassData>>(context);
     double h = MediaQuery.of(context).size.height;
 
     return Scaffold(
