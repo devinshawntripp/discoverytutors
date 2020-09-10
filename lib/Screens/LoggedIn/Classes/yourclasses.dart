@@ -17,86 +17,70 @@ class YourClasses extends StatefulWidget {
 class _YourClassesState extends State<YourClasses> {
   //const YourClasses({Key key}) : super(key: key);
 
-  dynamic data;
-  Future<dynamic> getData(userid) async {
-    final DocumentReference document =
-        Firestore.instance.collection("Tutors").document(userid);
-
-    await document.get().then<dynamic>((DocumentSnapshot snapshot) async {
-      setState(() {
-        data = snapshot.data;
-        return data;
-      });
-    });
-  }
-
   // Future<dynamic> getClasses(userid) async {}
 
   @override
   void initState() {
-    ClassDataNotifier classdatanotif =
-        Provider.of<ClassDataNotifier>(context, listen: false);
-    // final user = Provider.of<User>(context);
-    // getTheClasses(classdatanotif);
-
+    // ClassDataNotifier classdatanotif =
+    //     Provider.of<ClassDataNotifier>(context, listen: false);
     var u = FirebaseAuth.instance.currentUser();
+    // final user = Provider.of<User>(context);
+    // print(user.uid);
+
     u.then((value) {
-      getData(value.uid);
-      // print("DKJFLD HDEKJF");
+      print(value.uid);
+      Provider.of<UserDataNotifier>(context, listen: false)
+          .getTheUser(value.uid);
     });
+
+    Provider.of<UserDataNotifier>(context, listen: false).getTheUserClasses();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
-    ClassDataNotifier classData = Provider.of<ClassDataNotifier>(context);
-    List<UserClassData> cData = Provider.of<List<UserClassData>>(context);
+    // final user = Provider.of<User>(context);
+    // ClassDataNotifier classData = Provider.of<ClassDataNotifier>(context);
+    // List<UserClassData> cData = Provider.of<List<UserClassData>>(context);
 
-    Tutor t;
-    String name;
-    bool loading = false;
+    final userdata = context.watch<UserDataNotifier>();
+
     double h = MediaQuery.of(context).size.height;
-    var tutor =
-        Firestore.instance.collection("Tutors").document(user.uid).get();
-    print(tutor.then((value) {
-      // t.firstName = value.data["firstname"] ?? "";
-      print(value.data["firstname"]);
-      name = value.data["firstname"];
-      // tutorsClasses = value.data["classes"];
-      // print(tutorsClasses);
-      // print(t.firstName);
-    }));
 
     // print(data);
     return Scaffold(
       backgroundColor: Color(0xff3DDC97),
       appBar: AppBar(
         backgroundColor: Color(0xff7211E0),
-        title: StreamBuilder(
-          stream: Firestore.instance
-              .collection("Tutors")
-              .document(user.uid)
-              .snapshots(),
-          builder: (context, snapshot) {
-            return Text(snapshot.data["firstname"] ?? "");
-          },
-        ),
+
+        title: userdata.user == null
+            ? CircularProgressIndicator()
+            : Text(userdata.user.firstName ?? ""),
+        // title: StreamBuilder(
+        //   stream: Firestore.instance
+        //       .collection("Tutors")
+        //       .document(user.uid)
+        //       .snapshots(),
+        //   builder: (context, snapshot) {
+        //     return Text(snapshot.data["firstname"] ?? "");
+        //   },
+        // ),
       ),
       body: Container(
           // padding: EdgeInsets.symmetric(vertical: h / 8),
           padding: EdgeInsets.fromLTRB(0, h / 8, 0, 0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               SizedBox(
                   height: h * .5,
-                  child: cData == null
+                  child: userdata.classes == null
                       ? Loading()
-                      : cData.isEmpty
+                      : userdata.classes.isEmpty
                           ? Loading()
                           : UserClassList(
-                              data: cData,
+                              data: userdata.classes,
                             )),
               RaisedButton(
                 child: Text("Add Class"),

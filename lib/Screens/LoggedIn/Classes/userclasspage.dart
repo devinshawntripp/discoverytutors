@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 //this class will show the homework, notes, and tests data
 class UserClassPage extends StatefulWidget {
-  UserClassData data;
+  ClassData data;
 
   UserClassPage({Key key, this.data}) : super(key: key);
 

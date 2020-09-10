@@ -10,7 +10,7 @@ import 'package:morpheus/page_routes/morpheus_page_route.dart';
 import 'package:provider/provider.dart';
 
 class UserClassList extends StatefulWidget {
-  final List<UserClassData> data;
+  final List<ClassData> data;
 
   const UserClassList({Key key, this.data}) : super(key: key);
   @override

@@ -3,6 +3,7 @@ import 'package:disc_t/Screens/LoggedIn/Classes/yourclasses.dart';
 import 'package:disc_t/Services/auth.dart';
 import 'package:disc_t/Services/database.dart';
 import 'package:disc_t/models/user.dart';
+import 'package:disc_t/shared/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -38,9 +39,16 @@ class _TutorsState extends State<Tutors> {
   @override
   void initState() {
     var u = FirebaseAuth.instance.currentUser();
+    // final user = Provider.of<User>(context);
+    // print(user.uid);
+
     u.then((value) {
       getData(value.uid);
       email = value.email;
+
+      print(value.uid);
+      Provider.of<UserDataNotifier>(context, listen: false)
+          .getTheUser(value.uid);
     });
     super.initState();
   }
@@ -49,6 +57,15 @@ class _TutorsState extends State<Tutors> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
+    // final userdata = Provider.of<UserData>(context);
+
+    // final userdata =
+    //     Provider.of<UserData>(context, listen: false).getTheUser(user.uid);
+
+    final userdata = context.watch<UserDataNotifier>();
+
+    // print(userdata.user.firstName);
+    // print('slkdjfklsjflsljdf');
 
     var tutor =
         Firestore.instance.collection("Tutors").document(user.uid).get();
@@ -94,23 +111,17 @@ class _TutorsState extends State<Tutors> {
             child: ListView(
               children: <Widget>[
                 UserAccountsDrawerHeader(
-                  accountName: StreamBuilder(
-                    stream: Firestore.instance
-                        .collection("Tutors")
-                        .document(user.uid)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        userFirstName = snapshot.data['firstname'] ?? "";
-                        return Text(snapshot.data['firstname'] ?? "");
-                      }
-                    },
-                  ),
-                  accountEmail: Text(email),
+                  accountName: userdata.user == null
+                      ? CircularProgressIndicator()
+                      : Text(userdata.user.firstName),
+                  accountEmail: Text(user.email),
                   currentAccountPicture: CircleAvatar(
                       backgroundColor: Color(0xff3DDC97),
-                      child: Text(userFirstName[0],
-                          style: TextStyle(fontSize: 30, color: Colors.white))),
+                      child: userdata.user == null
+                          ? CircularProgressIndicator()
+                          : Text(userdata.user.firstName[0],
+                              style: TextStyle(
+                                  fontSize: 30, color: Colors.white))),
                 ),
                 ListTile(
                   title: Text("Home"),

@@ -63,20 +63,18 @@ class _ClassPageState extends State<ClassPage> {
                       margin: EdgeInsets.all(10),
                       height: 40,
                       width: w,
-                      child: Expanded(
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: widget.data.preq.length,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                padding: EdgeInsets.only(left: 5),
-                                child: Text(
-                                  widget.data.preq[index].classname,
-                                  style: TextStyle(color: Colors.red),
-                                ),
-                              );
-                            }),
-                      ),
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: widget.data.preq.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              padding: EdgeInsets.only(left: 5),
+                              child: Text(
+                                widget.data.preq[index].classname,
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            );
+                          }),
                     ),
                   ],
                 ),

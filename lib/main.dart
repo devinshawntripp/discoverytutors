@@ -22,8 +22,17 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => ClassDataNotifier(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => UserDataNotifier(),
+        )
+        // StreamProvider<UserData>.value(
+        //   value: DatabaseService().userdata,
+        // ),
       ],
-      child: MaterialApp(home: Wrapper()),
+      child: MaterialApp(
+        home: Wrapper(),
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }

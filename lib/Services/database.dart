@@ -43,7 +43,6 @@ class DatabaseService {
     String classid,
     String collection,
   ) async {
-    
     return await classesCollection
         .document(classid)
         .collection(collection)
@@ -59,8 +58,6 @@ class DatabaseService {
       value.updateData({'docid': value.documentID});
     });
   }
-
-  Future registerStudent() async {}
 
   Stream<List<AllClassesData>> get allclasses {
     //some test code to see if this compiles
@@ -103,7 +100,8 @@ class DatabaseService {
   }
 
   Stream<UserData> get userdata {
-    // print("some things " + uid);
+    print("some things " + uid);
+
     return tutorsCollection
         .document(uid)
         .snapshots()

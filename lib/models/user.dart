@@ -4,14 +4,99 @@ import 'package:flutter/material.dart';
 
 class User {
   final String uid;
+  final String email;
 
-  User({this.uid});
+  User({this.uid, this.email});
 }
 
-class UserData {
-  final String firstName;
-  final int rating;
-  final List<String> classes;
+class UserDataNotifier extends ChangeNotifier {
+  UserData _user;
+  List<ClassData> _classes;
+
+  UserData get user => _user;
+
+  List<ClassData> get classes => _classes;
+
+  set user(UserData name) {
+    _user = name;
+    notifyListeners();
+  }
+
+  set classes(List<ClassData> c) {
+    _classes = c;
+    notifyListeners();
+  }
+
+  Future<void> getTheUserClasses() async {
+    List<ClassData> _classList = List<ClassData>();
+    print("HERE IS THE USER CLASSES");
+    print(user.classes);
+
+    for (String c in user.classes) {
+      DocumentSnapshot classsnapshot =
+          await Firestore.instance.collection("Classes").document(c).get();
+
+      final data =
+          ClassData.fromUserMap(classsnapshot.data, classsnapshot.documentID);
+
+      if (data != null) {
+        _classList.add(data);
+      }
+    }
+
+    // await Future.forEach(snapshot.documents, (document) async {
+    //   // ClassData data = ClassData.fromMap(document.data);
+    //   QuerySnapshot pre = await Firestore.instance
+    //       .collection("Classes")
+    //       .document(document.documentID)
+    //       .collection("Pre")
+    //       .getDocuments();
+
+    //   List<Preq> _preList = List<Preq>();
+
+    //   pre.documents.forEach((preClass) {
+    //     Preq preqData = Preq.fromMap(preClass.data);
+
+    //     if (preClass.data != null) {
+    //       _preList.add(preqData);
+    //     }
+    //   });
+
+    //   ClassData data =
+    //       ClassData.fromMap(document.data, document.documentID, _preList);
+
+    //   // print("BIG FAT ONE");
+    //   // print(document.data);
+    //   if (data != null) {
+    //     _classList.add(data);
+    //   }
+    // });
+
+    notifyListeners();
+
+    classes = _classList;
+  }
+
+  Future<void> getTheUser(String uid) async {
+    DocumentSnapshot snapshot =
+        await Firestore.instance.collection("Tutors").document(uid).get();
+    // print(uid);
+    // print("UID OF THE TUTOR");
+    notifyListeners();
+    user = UserData.fromMap(snapshot.data);
+  }
+}
+
+class UserData extends ChangeNotifier {
+  String firstName;
+  int rating;
+  List<String> classes;
+
+  UserData.fromMap(Map<String, dynamic> data) {
+    firstName = data['firstname'] ?? "";
+    rating = data['rating'] ?? "";
+    classes = data['classes'].cast<String>() ?? "";
+  }
 
   UserData({this.firstName, this.rating, this.classes});
 }
@@ -55,8 +140,8 @@ class ClassDataNotifier extends ChangeNotifier {
   List<Test> get tests => _tests;
 
   Future<void> getTheHomeworks() async {
-    print("INSIDE THE GET HOMEWORK METHOD");
-    print(_currentClass.classid);
+    // print("INSIDE THE GET HOMEWORK METHOD");
+    // print(_currentClass.classid);
     QuerySnapshot snapshot = await Firestore.instance
         .collection("Classes")
         .document(_currentClass.classid)
@@ -314,6 +399,13 @@ class ClassData {
     this.classdescription,
     this.classid,
   });
+
+  ClassData.fromUserMap(Map<String, dynamic> data, String docID) {
+    classname = data['Title'] ?? "";
+    classdescription = data['Description'] ?? "";
+    documentID = docID;
+    classid = data['classid'];
+  }
 
   ClassData.fromMap(Map<String, dynamic> data, String docID, List<Preq> p) {
     classname = data['Title'] ?? "";

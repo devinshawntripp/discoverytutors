@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'classpage.dart';
 
 class ClassPageRoute extends MaterialPageRoute {
-  ClassPageRoute(UserClassData data)
+  ClassPageRoute(ClassData data)
       : super(builder: (context) => UserClassPage(data: data));
 
   @override
