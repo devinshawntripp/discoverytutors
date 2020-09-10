@@ -12,8 +12,10 @@ class User {
 class UserDataNotifier extends ChangeNotifier {
   UserData _user;
   List<ClassData> _classes;
+  List<Homework> _homeworks;
 
   UserData get user => _user;
+  List<Homework> get homeworks => _homeworks;
 
   List<ClassData> get classes => _classes;
 
@@ -26,6 +28,13 @@ class UserDataNotifier extends ChangeNotifier {
     _classes = c;
     notifyListeners();
   }
+
+  set homeworks(List<Homework> h) {
+    _homeworks = h;
+    notifyListeners();
+  }
+
+  Future<void> getTheUserHomeworks() async {}
 
   Future<void> getTheUserClasses() async {
     List<ClassData> _classList = List<ClassData>();

@@ -20,8 +20,15 @@ class _HomeworkListPageState extends State<HomeworkListPage> {
           title: Text(widget.homenotetest.filename),
         ),
         body: Container(
-            child: Image.network(
-          widget.imageurl,
-        )));
+            child: Image.network(widget.imageurl,
+                loadingBuilder: (context, child, loadingImage) {
+          return loadingImage == null
+              ? Center(
+                  child: child,
+                )
+              : LinearProgressIndicator(
+                  backgroundColor: Colors.white,
+                );
+        })));
   }
 }

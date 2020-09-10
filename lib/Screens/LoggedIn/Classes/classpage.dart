@@ -32,6 +32,8 @@ class _ClassPageState extends State<ClassPage> {
 
     final classDataNotif = context.watch<ClassDataNotifier>();
 
+    print(widget.data.preq);
+
     return Scaffold(
         backgroundColor: Color(0xff3DDC97),
         appBar: AppBar(
@@ -49,36 +51,40 @@ class _ClassPageState extends State<ClassPage> {
               Expanded(
                 child: Text(""),
               ),
-              Container(
-                color: Colors.blue,
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                        margin: EdgeInsets.only(top: 5),
-                        height: h * .04,
-                        width: w,
-                        child:
-                            Text("Prequisites", textAlign: TextAlign.center)),
-                    Container(
-                      margin: EdgeInsets.all(10),
-                      height: 40,
-                      width: w,
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: widget.data.preq.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              padding: EdgeInsets.only(left: 5),
-                              child: Text(
-                                widget.data.preq[index].classname,
-                                style: TextStyle(color: Colors.red),
-                              ),
-                            );
-                          }),
-                    ),
-                  ],
-                ),
-              )
+              widget.data.preq == null
+                  ? Text("")
+                  : Container(
+                      color: Colors.blue,
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                              margin: EdgeInsets.only(top: 5),
+                              height: h * .04,
+                              width: w,
+                              child: Text("Prequisites",
+                                  textAlign: TextAlign.center)),
+                          Container(
+                            margin: EdgeInsets.all(10),
+                            height: 40,
+                            width: w,
+                            child: widget.data.preq == null
+                                ? Text("")
+                                : ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: widget.data.preq.length,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        padding: EdgeInsets.only(left: 5),
+                                        child: Text(
+                                          widget.data.preq[index].classname,
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                      );
+                                    }),
+                          ),
+                        ],
+                      ),
+                    )
             ],
           ),
         ));

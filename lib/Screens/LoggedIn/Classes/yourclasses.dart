@@ -21,6 +21,7 @@ class _YourClassesState extends State<YourClasses> {
 
   @override
   void initState() {
+    Provider.of<ClassDataNotifier>(context, listen: false).getTheClasses();
     // ClassDataNotifier classdatanotif =
     //     Provider.of<ClassDataNotifier>(context, listen: false);
     var u = FirebaseAuth.instance.currentUser();
@@ -42,6 +43,7 @@ class _YourClassesState extends State<YourClasses> {
     // final user = Provider.of<User>(context);
     // ClassDataNotifier classData = Provider.of<ClassDataNotifier>(context);
     // List<UserClassData> cData = Provider.of<List<UserClassData>>(context);
+    final d = context.watch<ClassDataNotifier>();
 
     final userdata = context.watch<UserDataNotifier>();
 
@@ -52,19 +54,9 @@ class _YourClassesState extends State<YourClasses> {
       backgroundColor: Color(0xff3DDC97),
       appBar: AppBar(
         backgroundColor: Color(0xff7211E0),
-
         title: userdata.user == null
             ? CircularProgressIndicator()
             : Text(userdata.user.firstName ?? ""),
-        // title: StreamBuilder(
-        //   stream: Firestore.instance
-        //       .collection("Tutors")
-        //       .document(user.uid)
-        //       .snapshots(),
-        //   builder: (context, snapshot) {
-        //     return Text(snapshot.data["firstname"] ?? "");
-        //   },
-        // ),
       ),
       body: Container(
           // padding: EdgeInsets.symmetric(vertical: h / 8),
@@ -79,8 +71,9 @@ class _YourClassesState extends State<YourClasses> {
                       ? Loading()
                       : userdata.classes.isEmpty
                           ? Loading()
-                          : UserClassList(
+                          : ClassList(
                               data: userdata.classes,
+                              dataNotif: d,
                             )),
               RaisedButton(
                 child: Text("Add Class"),

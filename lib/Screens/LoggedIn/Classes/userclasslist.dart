@@ -22,16 +22,10 @@ class _UserClassListState extends State<UserClassList> {
   void initState() {
     ClassDataNotifier classdatanotif =
         Provider.of<ClassDataNotifier>(context, listen: false);
-    // final user = Provider.of<User>(context);
-    // getTheClasses(classdatanotif);
-    // List<ClassData> d = classes;
-    // List<ClassData> cData = Provider.of<List<ClassData>>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    // ClassDataNotifier classdatanotif = Provider.of<ClassDataNotifier>(context);
-
     return PageView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: widget.data.length,

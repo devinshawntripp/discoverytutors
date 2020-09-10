@@ -19,16 +19,10 @@ class _HomeworkRowBoxState extends State<HomeworkRowBox> {
     final w = MediaQuery.of(context).size.width;
 
     return Container(
-      margin: EdgeInsets.only(top: 5),
-      color: Colors.blue,
+      color: Colors.white,
       child: Column(children: <Widget>[
         Container(
-            width: w,
-            child: CustomPaint(
-              painter: LinePainter(),
-            )),
-        Container(
-          height: h / 13,
+          height: h / 10,
           padding: EdgeInsets.all(10.0),
           child: Row(
             children: <Widget>[
@@ -67,11 +61,6 @@ class _HomeworkRowBoxState extends State<HomeworkRowBox> {
             ],
           ),
         ),
-        Container(
-            width: w,
-            child: CustomPaint(
-              painter: LinePainter(),
-            ))
       ]),
     );
   }

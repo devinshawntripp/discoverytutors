@@ -32,17 +32,25 @@ class DatabaseService {
     });
   }
 
+  Future deleteHomework(String docid, String classid, String collection) async {
+    return await classesCollection
+        .document(classid)
+        .collection(collection)
+        .document(docid)
+        .delete();
+  }
+
   Future createHomework(
-    User user,
-    String filename,
-    String docid,
-    int upvotes,
-    int downvotes,
-    int rank,
-    String imageLocation,
-    String classid,
-    String collection,
-  ) async {
+      User user,
+      String filename,
+      String docid,
+      int upvotes,
+      int downvotes,
+      int rank,
+      String imageLocation,
+      String classid,
+      String collection,
+      String userid) async {
     return await classesCollection
         .document(classid)
         .collection(collection)
@@ -56,6 +64,9 @@ class DatabaseService {
       "rank": 0 //will calculate later
     }).then((value) {
       value.updateData({'docid': value.documentID});
+      tutorsCollection
+          .document(userid)
+          .updateData({'Homework': value.documentID});
     });
   }
 

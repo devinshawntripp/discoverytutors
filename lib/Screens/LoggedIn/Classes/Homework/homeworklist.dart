@@ -6,6 +6,7 @@ import 'package:disc_t/Services/database.dart';
 import 'package:disc_t/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:morpheus/page_routes/morpheus_page_route.dart';
 import 'package:path/path.dart' as path;
@@ -43,26 +44,55 @@ class _HomeworkListState extends State<HomeworkList> {
     Provider.of<ClassDataNotifier>(context, listen: false).getTheHomeworks();
     Provider.of<ClassDataNotifier>(context, listen: false).getTheNotes();
     Provider.of<ClassDataNotifier>(context, listen: false).getTheTests();
-    // final user = Provider.of<User>(context);
-    // getTheClasses(classdatanotif);
 
-    // var u = FirebaseAuth.instance.currentUser();
-    // u.then((value) {
-    //   getData(value.uid);
-    //   // print("DKJFLD HDEKJF");
-    // });
     super.initState();
+  }
+
+  Widget IconConditional(
+    String uid,
+    List<dynamic> list,
+    int index,
+    String classid,
+    String doctype,
+    BuildContext context,
+    ClassDataNotifier classDataNotif,
+  ) {
+    if (list[index].uid == uid) {
+      return IconSlideAction(
+        caption: "Delete",
+        color: Colors.red,
+        icon: Icons.delete,
+        onTap: () {
+          _database.deleteHomework(list[index].docid, classid, doctype);
+          final snackBar = SnackBar(
+            content: Text('Success ${doctype} was deleted'),
+            duration: Duration(seconds: 2),
+            onVisible: () {},
+            behavior: SnackBarBehavior.floating,
+          );
+          Scaffold.of(context).showSnackBar(snackBar);
+
+          switch (widget.name) {
+            case "Homework":
+              classDataNotif.getTheHomeworks();
+              break;
+            case "Notes":
+              classDataNotif.getTheNotes();
+              break;
+            case "Tests":
+              classDataNotif.getTheTests();
+              break;
+          }
+        },
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
-    // List<ClassData> cData = Provider.of<List<ClassData>>(context);
-
-    // ClassData classImIn;
 
     final classDataNotif = context.watch<ClassDataNotifier>();
-    // print(d.currentClass.classdescription);
 
     List<dynamic> list;
 
@@ -105,8 +135,36 @@ class _HomeworkListState extends State<HomeworkList> {
                                     ),
                                 transitionToChild: true));
                       },
-                      child: HomeworkRowBox(
-                        homenotetest: list[index],
+                      child: Slidable(
+                        actionPane: SlidableDrawerActionPane(),
+                        actionExtentRatio: 0.25,
+                        child: HomeworkRowBox(
+                          homenotetest: list[index],
+                        ),
+                        actions: <Widget>[
+                          IconSlideAction(
+                            caption: "Archive",
+                            color: Colors.blue,
+                            icon: Icons.archive,
+                            onTap: () => {},
+                          ),
+                          IconSlideAction(
+                            caption: "Share",
+                            color: Colors.blue[300],
+                            icon: Icons.share,
+                            onTap: () => {},
+                          )
+                        ],
+                        secondaryActions: <Widget>[
+                          IconConditional(
+                              user.uid,
+                              list,
+                              index,
+                              classDataNotif.currentClass.classid,
+                              widget.name,
+                              context,
+                              classDataNotif)
+                        ],
                       ),
                     ),
                   );
@@ -122,8 +180,17 @@ class _HomeworkListState extends State<HomeworkList> {
                 String imageName = path.basename(value.path);
 
                 _database
-                    .createHomework(user, imageName, "", 0, 0, 0, imageLocation,
-                        classDataNotif.currentClass.classid, widget.name)
+                    .createHomework(
+                        user,
+                        imageName,
+                        "",
+                        0,
+                        0,
+                        0,
+                        imageLocation,
+                        classDataNotif.currentClass.classid,
+                        widget.name,
+                        user.uid)
                     .then((value) {});
 
                 // _database.fetchClassdata;
@@ -164,22 +231,11 @@ class _HomeworkListState extends State<HomeworkList> {
     StorageUploadTask task = firebaseStorageRef.putFile(img);
 
     await task.onComplete;
-    print("File uploaded");
 
     await firebaseStorageRef.getDownloadURL().then((fileURL) {
       setState(() {
         imageLocation = fileURL;
       });
     });
-  }
-
-  Widget enableUpload() {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Image.file(img, height: 300.0, width: 300.0),
-        ],
-      ),
-    );
   }
 }

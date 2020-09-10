@@ -20,21 +20,7 @@ class ClassList extends StatefulWidget {
 
 class _ClassListState extends State<ClassList> {
   @override
-  void initState() {
-    // ClassDataNotifier classdatanotif =
-    //     Provider.of<ClassDataNotifier>(context, listen: false);
-    // final user = Provider.of<User>(context);
-    // getTheClasses(classdatanotif);
-    // List<ClassData> d = classes;
-    // List<ClassData> cData = Provider.of<List<ClassData>>(context);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    // ClassDataNotifier classdatanotif = Provider.of<ClassDataNotifier>(context);
-
-    // final streamClassData = Provider.of<List<ClassData>>(context);
-
     return PageView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: widget.data.length,
@@ -46,13 +32,7 @@ class _ClassListState extends State<ClassList> {
             tag: widget.data[index],
             child: GestureDetector(
               onTap: () {
-                // print("Data from stream list");
-                // print(widget.data[index]);
-
                 widget.dataNotif.currentClass = widget.data[index];
-                // print("Tiny willie");
-
-                // print(widget.dataNotif.currentClass.classdescription);
 
                 Navigator.push(
                     context,
