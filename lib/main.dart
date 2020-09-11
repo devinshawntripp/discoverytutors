@@ -14,25 +14,41 @@ class MyApp extends StatelessWidget {
   // final DatabaseService ds = DatabaseService();
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        StreamProvider<User>.value(
-          value: AuthService().user,
-        ),
-        ChangeNotifierProvider(
-          create: (context) => ClassDataNotifier(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => UserDataNotifier(),
-        )
-        // StreamProvider<UserData>.value(
-        //   value: DatabaseService().userdata,
-        // ),
-      ],
-      child: MaterialApp(
-        home: Wrapper(),
-        debugShowCheckedModeBanner: false,
-      ),
-    );
+    return StreamProvider<User>.value(
+        value: AuthService().user,
+        child: Consumer<User>(
+          builder: (_, user, __) {
+            return MultiProvider(
+              providers: [
+                StreamProvider<List<ClassData>>.value(
+                    value: DatabaseService().classdata),
+                // StreamProvider<UserData>.value(
+                //     value: Stream.fromFuture(UserData().getTheUserClasses())),
+                // StreamProvider<List<Homework>>.value(
+                //     value: ClassDataNotifier().homework),
+                user == null
+                    ? StreamProvider<UserData>.value(
+                        value: DatabaseService().streamuserdata,
+                      )
+                    : StreamProvider<UserData>.value(
+                        value: DatabaseService(uid: user.uid).streamuserdata,
+                      ),
+                ChangeNotifierProvider(
+                  create: (context) => ClassDataNotifier(),
+                ),
+                ChangeNotifierProvider(
+                  create: (context) => UserDataNotifier(),
+                )
+                // StreamProvider<UserData>.value(
+                //   value: DatabaseService().userdata,
+                // ),
+              ],
+              child: MaterialApp(
+                home: Wrapper(),
+                debugShowCheckedModeBanner: false,
+              ),
+            );
+          },
+        ));
   }
 }

@@ -16,9 +16,9 @@ class Tile extends StatefulWidget {
 class _TileState extends State<Tile> {
   @override
   void initState() {
-    Provider.of<ClassDataNotifier>(context, listen: false).getTheHomeworks();
-    Provider.of<ClassDataNotifier>(context, listen: false).getTheNotes();
-    Provider.of<ClassDataNotifier>(context, listen: false).getTheTests();
+    // Provider.of<ClassDataNotifier>(context, listen: false).getTheHomeworks();
+    // Provider.of<ClassDataNotifier>(context, listen: false).getTheNotes();
+    // Provider.of<ClassDataNotifier>(context, listen: false).getTheTests();
 
     super.initState();
   }
@@ -28,7 +28,7 @@ class _TileState extends State<Tile> {
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
 
-    final classDataNotif = context.watch<ClassDataNotifier>();
+    // final classDataNotif = context.watch<ClassDataNotifier>();
     return Container(
       child: GestureDetector(
         onTap: () {
@@ -38,7 +38,7 @@ class _TileState extends State<Tile> {
                   context,
                   MorpheusPageRoute(
                     builder: (context) => HomeworkList(
-                        homenotetest: classDataNotif.homework,
+                        // homenotetest: classDataNotif.homework,
                         name: "Homework"),
                     transitionToChild: true,
                   ));
@@ -48,7 +48,8 @@ class _TileState extends State<Tile> {
                   context,
                   MorpheusPageRoute(
                     builder: (context) => HomeworkList(
-                        homenotetest: classDataNotif.notes, name: "Notes"),
+                        // homenotetest: classDataNotif.notes,
+                        name: "Notes"),
                     transitionToChild: true,
                   ));
               break;
@@ -57,7 +58,8 @@ class _TileState extends State<Tile> {
                   context,
                   MorpheusPageRoute(
                     builder: (context) => HomeworkList(
-                        homenotetest: classDataNotif.tests, name: "Tests"),
+                        // homenotetest: classDataNotif.tests,
+                        name: "Tests"),
                     transitionToChild: true,
                   ));
               break;

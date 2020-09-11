@@ -12,7 +12,9 @@ import 'package:provider/provider.dart';
 class UserClassList extends StatefulWidget {
   final List<ClassData> data;
 
-  const UserClassList({Key key, this.data}) : super(key: key);
+  final ClassDataNotifier dataNotif;
+
+  const UserClassList({Key key, this.data, this.dataNotif}) : super(key: key);
   @override
   _UserClassListState createState() => _UserClassListState();
 }
@@ -35,11 +37,12 @@ class _UserClassListState extends State<UserClassList> {
             tag: widget.data[index],
             child: GestureDetector(
               onTap: () {
+                widget.dataNotif.currentClass = widget.data[index];
                 Navigator.push(
                     context,
                     MorpheusPageRoute(
                         builder: (context) =>
-                            UserClassPage(data: widget.data[index]),
+                            ClassPage(data: widget.data[index]),
                         transitionToChild: true));
               },
               child: ClassTile(

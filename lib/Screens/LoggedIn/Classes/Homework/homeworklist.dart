@@ -4,6 +4,7 @@ import 'package:disc_t/Screens/LoggedIn/Classes/Homework/homeworklistpage.dart';
 import 'package:disc_t/Screens/LoggedIn/Classes/Homework/homeworkrowbox.dart';
 import 'package:disc_t/Services/database.dart';
 import 'package:disc_t/models/user.dart';
+import 'package:disc_t/shared/loading.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -41,9 +42,9 @@ class _HomeworkListState extends State<HomeworkList> {
 
   @override
   void initState() {
-    Provider.of<ClassDataNotifier>(context, listen: false).getTheHomeworks();
-    Provider.of<ClassDataNotifier>(context, listen: false).getTheNotes();
-    Provider.of<ClassDataNotifier>(context, listen: false).getTheTests();
+    // Provider.of<ClassDataNotifier>(context, listen: false).getTheHomeworks();
+    // Provider.of<ClassDataNotifier>(context, listen: false).getTheNotes();
+    // Provider.of<ClassDataNotifier>(context, listen: false).getTheTests();
 
     super.initState();
   }
@@ -72,42 +73,24 @@ class _HomeworkListState extends State<HomeworkList> {
           );
           Scaffold.of(context).showSnackBar(snackBar);
 
-          switch (widget.name) {
-            case "Homework":
-              classDataNotif.getTheHomeworks();
-              break;
-            case "Notes":
-              classDataNotif.getTheNotes();
-              break;
-            case "Tests":
-              classDataNotif.getTheTests();
-              break;
-          }
+          // switch (widget.name) {
+          //   case "Homework":
+          //     // classDataNotif.getTheHomeworks();
+          //     break;
+          //   case "Notes":
+          //     // classDataNotif.getTheNotes();
+          //     break;
+          //   case "Tests":
+          //     // classDataNotif.getTheTests();
+          //     break;
+          // }
         },
       );
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
-
-    final classDataNotif = context.watch<ClassDataNotifier>();
-
-    List<dynamic> list;
-
-    switch (widget.name) {
-      case "Homework":
-        list = classDataNotif.homework;
-        break;
-      case "Notes":
-        list = classDataNotif.notes;
-        break;
-      case "Tests":
-        list = classDataNotif.tests;
-        break;
-    }
-
+  Widget buildUI(
+      ClassDataNotifier classDataNotif, List<dynamic> list, User user) {
     return Scaffold(
       backgroundColor: Color(0xff3DDC97),
       appBar: AppBar(
@@ -118,6 +101,7 @@ class _HomeworkListState extends State<HomeworkList> {
         builder: (BuildContext context) {
           return Container(
             // padding: EdgeInsets.only(top: 5),
+            // child: Text(""),
             child: ListView.builder(
                 itemCount: list.length,
                 scrollDirection: Axis.vertical,
@@ -138,6 +122,7 @@ class _HomeworkListState extends State<HomeworkList> {
                       child: Slidable(
                         actionPane: SlidableDrawerActionPane(),
                         actionExtentRatio: 0.25,
+                        // child: Text(""),
                         child: HomeworkRowBox(
                           homenotetest: list[index],
                         ),
@@ -196,18 +181,6 @@ class _HomeworkListState extends State<HomeworkList> {
                 // _database.fetchClassdata;
               });
 
-              switch (widget.name) {
-                case "Homework":
-                  classDataNotif.getTheHomeworks();
-                  break;
-                case "Notes":
-                  classDataNotif.getTheNotes();
-                  break;
-                case "Tests":
-                  classDataNotif.getTheTests();
-                  break;
-              }
-
               final snackBar = SnackBar(
                 content:
                     Text('Success ${path.basename(img.path)} was uploaded'),
@@ -222,6 +195,62 @@ class _HomeworkListState extends State<HomeworkList> {
         },
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
+    // final homework = Provider.of<List<Homework>>(context);
+
+    final classDataNotif = context.watch<ClassDataNotifier>();
+
+    switch (widget.name) {
+      case "Homework":
+        return StreamProvider.value(
+          value: classDataNotif.homework,
+          builder: (context, child) {
+            final list = Provider.of<List<Homework>>(context);
+
+            // final n = Provider.of<List<Homework>>(context);
+            // print(n);
+
+            return list == null
+                ? Loading()
+                : buildUI(classDataNotif, list, user);
+          },
+        );
+        break;
+      case "Notes":
+        return StreamProvider.value(
+          value: classDataNotif.notes,
+          builder: (context, child) {
+            final list = Provider.of<List<Note>>(context);
+
+            // final n = Provider.of<List<Homework>>(context);
+            // print(n);
+
+            return list == null
+                ? Loading()
+                : buildUI(classDataNotif, list, user);
+          },
+        );
+        break;
+      case "Tests":
+        return StreamProvider.value(
+          value: classDataNotif.tests,
+          builder: (context, child) {
+            final list = Provider.of<List<Test>>(context);
+
+            // final n = Provider.of<List<Homework>>(context);
+            // print(n);
+
+            return list == null
+                ? Loading()
+                : buildUI(classDataNotif, list, user);
+          },
+        );
+        break;
+    }
   }
 
   uploadFile() async {

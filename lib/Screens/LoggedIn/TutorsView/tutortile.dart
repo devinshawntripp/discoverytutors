@@ -18,11 +18,6 @@ class TutorTile extends StatelessWidget {
           margin: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0),
           child: ListTile(
             onTap: (() {
-              //need to get the document id from the database and
-              //pass it in as a value into Tutor so
-              //that this class can access all of the data of that
-              //tutor
-
               Navigator.push(
                   context,
                   MaterialPageRoute(

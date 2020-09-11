@@ -14,6 +14,7 @@ class DatabaseService {
   final classesCollection = Firestore.instance.collection("Classes");
   final homeworkCollection = Firestore.instance.collection("Classes");
   final hworkCollection = Firestore.instance.collection("Homework");
+  final Firestore _firestore = Firestore.instance;
 
   final allClassesCollection =
       Firestore.instance.collection("Tutors/allclasses");
@@ -38,6 +39,23 @@ class DatabaseService {
         .collection(collection)
         .document(docid)
         .delete();
+  }
+
+  Stream<List<ClassData>> get classdata {
+    return _firestore.collection("Classes").snapshots().map(
+        (QuerySnapshot snapshot) => snapshot.documents
+            .map((e) => ClassData.fromUserMap(e.data, e.documentID))
+            .toList());
+  }
+
+  Stream<UserData> get streamuserdata {
+    //get the user classes first
+
+    return _firestore
+        .collection("Tutors")
+        .document(uid)
+        .snapshots()
+        .map((event) => UserData.fromMap(event.data));
   }
 
   Future createHomework(

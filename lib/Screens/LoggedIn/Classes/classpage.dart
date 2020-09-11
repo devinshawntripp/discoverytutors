@@ -20,7 +20,7 @@ class ClassPage extends StatefulWidget {
 class _ClassPageState extends State<ClassPage> {
   @override
   void initState() {
-    Provider.of<ClassDataNotifier>(context, listen: false).getTheHomeworks();
+    // Provider.of<ClassDataNotifier>(context, listen: false).getTheHomeworks();
 
     super.initState();
   }
@@ -29,10 +29,6 @@ class _ClassPageState extends State<ClassPage> {
   Widget build(BuildContext context) {
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
-
-    final classDataNotif = context.watch<ClassDataNotifier>();
-
-    print(widget.data.preq);
 
     return Scaffold(
         backgroundColor: Color(0xff3DDC97),

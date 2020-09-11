@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:disc_t/Screens/LoggedIn/Classes/classlist.dart';
+import 'package:disc_t/Screens/LoggedIn/Classes/pickfromallclasses.dart';
 import 'package:disc_t/Screens/LoggedIn/Classes/userclasslist.dart';
 import 'package:disc_t/models/user.dart';
 import 'package:disc_t/shared/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:morpheus/page_routes/morpheus_page_route.dart';
 import 'package:provider/provider.dart';
 import 'package:disc_t/Services/database.dart';
 // import 'package:image_picker/image_picker.dart';
@@ -21,7 +23,7 @@ class _YourClassesState extends State<YourClasses> {
 
   @override
   void initState() {
-    Provider.of<ClassDataNotifier>(context, listen: false).getTheClasses();
+    // Provider.of<ClassDataNotifier>(context, listen: false).getTheClasses();
     // ClassDataNotifier classdatanotif =
     //     Provider.of<ClassDataNotifier>(context, listen: false);
     var u = FirebaseAuth.instance.currentUser();
@@ -38,14 +40,25 @@ class _YourClassesState extends State<YourClasses> {
     super.initState();
   }
 
+  _refresh() async {
+    setState(() {
+      Provider.of<UserDataNotifier>(context, listen: false).getTheUserClasses();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // final user = Provider.of<User>(context);
     // ClassDataNotifier classData = Provider.of<ClassDataNotifier>(context);
     // List<UserClassData> cData = Provider.of<List<UserClassData>>(context);
+    // final d = context.watch<ClassDataNotifier>();
     final d = context.watch<ClassDataNotifier>();
 
     final userdata = context.watch<UserDataNotifier>();
+    // List<ClassData> classl = Provider.of<List<ClassData>>(context);
+    final user = Provider.of<User>(context);
+
+    UserData data = Provider.of<UserData>(context);
 
     double h = MediaQuery.of(context).size.height;
 
@@ -71,13 +84,30 @@ class _YourClassesState extends State<YourClasses> {
                       ? Loading()
                       : userdata.classes.isEmpty
                           ? Loading()
-                          : ClassList(
+                          : UserClassList(
                               data: userdata.classes,
                               dataNotif: d,
                             )),
               RaisedButton(
                 child: Text("Add Class"),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PickFromAllClasses()))
+                      .then((value) {
+                    // print(value);
+                    if (value == 'success') {
+                      print("DLKJFDKLFJ");
+                      print(value);
+                      setState(() {
+                        d.getTheClasses();
+                        userdata.getTheUser(user.uid);
+                        userdata.getTheUserClasses();
+                      });
+                    }
+                  });
+                },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),
                 color: Colors.blue,
