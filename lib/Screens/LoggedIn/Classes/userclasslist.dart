@@ -28,30 +28,41 @@ class _UserClassListState extends State<UserClassList> {
 
   @override
   Widget build(BuildContext context) {
-    return PageView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: widget.data.length,
-        controller: PageController(viewportFraction: 0.9),
-        itemBuilder: (context, index) {
-          return Hero(
-            tag: widget.data[index],
-            child: GestureDetector(
-              onTap: () {
-                widget.dataNotif.currentClass = widget.data[index];
-                Navigator.push(
-                    context,
-                    MorpheusPageRoute(
-                        builder: (context) =>
-                            ClassPage(data: widget.data[index]),
-                        transitionToChild: true));
-              },
-              child: ClassTile(
-                classname: widget.data[index].classname,
-                description: widget.data[index].classdescription,
-                classcode: widget.data[index].documentID,
-              ),
-            ),
-          );
-        });
+    List<ClassData> classl = Provider.of<List<ClassData>>(context);
+    var userClassl;
+
+    if (classl != null) {
+      print("DLKJFDSLKJFKLDJDKLFJKLSDJ FKLSDJFKLSD JF");
+      print(classl.where((element) => (element.picked == true)));
+      userClassl = classl.where((element) => (element.picked == true)).toList();
+    }
+
+    return classl == null
+        ? Loading()
+        : PageView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: userClassl.length,
+            controller: PageController(viewportFraction: 0.9),
+            itemBuilder: (context, index) {
+              return Hero(
+                tag: classl[index],
+                child: GestureDetector(
+                  onTap: () {
+                    widget.dataNotif.currentClass = widget.data[index];
+                    Navigator.push(
+                        context,
+                        MorpheusPageRoute(
+                            builder: (context) =>
+                                ClassPage(data: widget.data[index]),
+                            transitionToChild: true));
+                  },
+                  child: ClassTile(
+                    classname: userClassl[index].classname,
+                    description: userClassl[index].classdescription,
+                    classcode: userClassl[index].documentID,
+                  ),
+                ),
+              );
+            });
   }
 }

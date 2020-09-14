@@ -91,7 +91,7 @@ class _RegisterTutorState extends State<RegisterTutor> {
                             NumberPicker.integer(
                               initialValue: 0,
                               minValue: 0,
-                              maxValue: 50,
+                              maxValue: 100,
                               onChanged: (val) {
                                 setState(() {
                                   _rate = val;

@@ -29,9 +29,10 @@ class DatabaseService {
       'firstname': firstname,
       'rating': 0,
       'classes': FieldValue.arrayUnion(classes),
-      'rate': rate,
+      'rate': rate ?? 0,
       'Contributions': 0,
-      'votes': 0
+      'totalvotes': 0,
+      'prof': false
     });
   }
 
@@ -43,65 +44,22 @@ class DatabaseService {
         .delete();
   }
 
+  // Stream<List<UserClassData> get userClassData {
+  //       return _firestore
+  //       .collection("Classes")
+  //       .where('tutors', arrayContains: uid)
+  //       .snapshots()
+  //       .map((event) => event.documents
+  //           .map((e) => UserClassData.fromMap(e.data, e.documentID))
+  //           .toList());
+
+  // }
+
   Stream<List<ClassData>> get classdata {
-    // print("here1");
-    // UserData userdata = UserData.fromTestMap(uid: uid);
-    // userdata.getTheUserClasses;
-    // print(userdata.classes);
-    // print("HERE !");
-
-    return _firestore
-        .collection("Classes")
-        .where('tutors', arrayContains: uid)
-        .snapshots()
-        .map((event) => event.documents
-            .map((e) => ClassData.fromUserMap(e.data, e.documentID))
+    return _firestore.collection("Classes").snapshots().map(
+        (QuerySnapshot snapshot) => snapshot.documents
+            .map((e) => ClassData.fromUserMapStream(e.data, e.documentID, uid))
             .toList());
-    // yield* _firestore
-    //     .collection("Classes")
-    //     .snapshots()
-    //     .asyncMap((QuerySnapshot snapshot) => snapshot.documents
-    //         .where((element) {
-    //           print("HERE 2");
-    //           // print("here2");
-    //           // print(element.documentID);
-    //           bool h = false;
-    //           var something =
-    //               _firestore.collection("Tutors").document(uid).get();
-
-    //           _firestore
-    //               .collection("Tutors")
-    //               .document(uid)
-    //               .snapshots()
-    //               .where((event) => event.data.containsValue());
-
-    //           _firestore.collection("Tutors").document(uid).get().then((value) {
-    //             for (var item in value.data['classes']) {
-    //               print("HERE 3");
-    //               // print(item);
-    //               if (element.documentID == item) {
-    //                 print("HERE 4");
-    //                 h = true;
-    //               }
-    //             }
-    //           });
-    //           // for (var i in userdata.classes) {
-    //           //   print(i);
-    //           //   if (element.documentID == i) {
-    //           //     print("here3");
-    //           //     h = true;
-    //           //   }
-    //           // }
-    //           // print("here4");
-    //           return h;
-    //         })
-    //         .map((e) => ClassData.fromUserMap(e.data, e.documentID))
-    //         .toList());
-
-    // return _firestore.collection("Classes").snapshots().map(
-    //     (QuerySnapshot snapshot) => snapshot.documents
-    //         .map((e) => ClassData.fromUserMap(e.data, e.documentID))
-    //         .toList());
   }
 
   Stream<UserData> get streamuserdata {
@@ -111,6 +69,15 @@ class DatabaseService {
         .document(uid)
         .snapshots()
         .map((event) => UserData.fromMap(event.data));
+  }
+
+  Stream<Tutor> get streamTutor {
+    //get the user classes first
+    return _firestore
+        .collection("Tutors")
+        .document(uid)
+        .snapshots()
+        .map((event) => Tutor.fromMap(event.data, event.documentID));
   }
 
   Future createHomework(

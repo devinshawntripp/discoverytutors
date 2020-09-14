@@ -39,29 +39,10 @@ class UserDataNotifier extends ChangeNotifier {
 
   Future<void> deleteClassesNotPicked(
       List<String> classNotPassed, String uid) async {
-    bool sameClassFound = false;
-
-    // for (String uc in user.classes) {
-    //   print(uc);
-    //   var val = [];
-    //   await Firestore.instance
-    //       .collection("Tutors")
-    //       .document(uid)
-    //       .get()
-    //       .then((value) {
-    //     val = value.data['classes'];
-    //     val.remove(uc);
-
-    //     print(val);
-    //   });
-    // }
-
     for (String c in classNotPassed) {
       //search for first class
       for (String uc in user.classes) {
         if (c == uc) {
-          sameClassFound = true;
-          // print("TRIED TO ADD A CLASS THAT THE USER ALREADY HAS");
           var val = [];
           var valTwo = [];
           //remove the classid from the user
@@ -73,7 +54,7 @@ class UserDataNotifier extends ChangeNotifier {
             val = value.data['classes'];
             val.remove(c);
             // val.removeWhere((element) => (element == c));
-            print(val);
+            // print(val);
 
             Firestore.instance
                 .collection("Tutors")
@@ -96,31 +77,6 @@ class UserDataNotifier extends ChangeNotifier {
           print(c);
         }
       }
-      // if (sameClassFound == true) {
-      //   var val = [];
-      //   await Firestore.instance
-      //       .collection("Tutors")
-      //       .document(uid)
-      //       .get()
-      //       .then((value) {
-      //     val = value.data['classes'];
-      //     val.remove(c);
-      //     // val.removeWhere((element) => (element == c));
-      //     // print(val);
-
-      //     // Firestore.instance
-      //     //     .collection("Tutors")
-      //     //     .document(uid)
-      //     //     .updateData({"classes": val});
-
-      //     // Firestore.instance
-      //     //     .collection("Classes")
-      //     //     .document(c)
-      //     //     .updateData({"tutors": val});
-      //   });
-      // } else {
-      //   sameClassFound = false;
-      // }
     }
 
     notifyListeners();
@@ -139,6 +95,7 @@ class UserDataNotifier extends ChangeNotifier {
       }
       if (sameClassFound == false) {
         //add this class "c" to the users database
+        print(c);
 
         await Firestore.instance.collection("Tutors").document(uid).updateData({
           "classes": FieldValue.arrayUnion([c])
@@ -247,10 +204,25 @@ class Tutor with ChangeNotifier {
   int totalVotes;
   int contributions;
   String firstName;
-  final int rating;
-  final String docid;
-  final int rate;
-  final List<String> classes;
+  int rating;
+  String docid;
+  int rate;
+  List<String> classes;
+  bool prof;
+
+  Tutor.fromMap(Map<String, dynamic> data, String docid) {
+    this.totalVotes = data['totalvotes'];
+    this.docid = docid;
+    this.rating = data['rating'];
+    this.rate = data['rate'];
+    this.prof = data['prof'] ?? false;
+    try {
+      this.classes = data['classes'].cast<String>();
+    } catch (error) {}
+
+    this.firstName = data['firstname'];
+    this.contributions = data['Contributions'];
+  }
 
   Tutor(
       {this.firstName,
@@ -259,7 +231,8 @@ class Tutor with ChangeNotifier {
       this.classes,
       this.rate,
       this.contributions,
-      this.totalVotes});
+      this.totalVotes,
+      this.prof});
 }
 
 // final List<String> classes = ["CSCE 2100", "CSCE 2110", "Automata Theory"];
@@ -634,12 +607,26 @@ class ClassData {
     this.classid,
   });
 
+  ClassData.fromUserMapStream(
+      Map<String, dynamic> data, String docID, String uid) {
+    classname = data['Title'] ?? "";
+    classdescription = data['Description'] ?? "";
+    documentID = docID;
+    classid = data['classid'];
+
+    List<String> tutorIds = data['tutors'].cast<String>();
+    if (tutorIds.contains(uid)) {
+      picked = true;
+    } else {
+      picked = false;
+    }
+  }
+
   ClassData.fromUserMap(Map<String, dynamic> data, String docID) {
     classname = data['Title'] ?? "";
     classdescription = data['Description'] ?? "";
     documentID = docID;
     classid = data['classid'];
-    picked = true;
   }
 
   ClassData.fromMap(Map<String, dynamic> data, String docID, List<Preq> p) {

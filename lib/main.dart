@@ -27,6 +27,13 @@ class MyApp extends StatelessWidget {
                 // StreamProvider<List<Homework>>.value(
                 //     value: ClassDataNotifier().homework),
                 user == null
+                    ? StreamProvider<Tutor>.value(
+                        value: DatabaseService().streamTutor,
+                      )
+                    : StreamProvider<Tutor>.value(
+                        value: DatabaseService(uid: user.uid).streamTutor,
+                      ),
+                user == null
                     ? StreamProvider<List<ClassData>>.value(
                         value: DatabaseService().classdata)
                     : StreamProvider<List<ClassData>>.value(

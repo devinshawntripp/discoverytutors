@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:disc_t/Screens/LoggedIn/Classes/createclass.dart';
+import 'package:disc_t/Screens/LoggedIn/Classes/pickfromallclasses.dart';
 import 'package:disc_t/Screens/LoggedIn/Classes/yourclasses.dart';
+import 'package:disc_t/Screens/LoggedIn/TutorsView/userprofile.dart';
 import 'package:disc_t/Services/auth.dart';
 import 'package:disc_t/Services/database.dart';
 import 'package:disc_t/models/user.dart';
@@ -46,7 +49,7 @@ class _TutorsState extends State<Tutors> {
       getData(value.uid);
       email = value.email;
 
-      print(value.uid);
+      // print(value.uid);
       Provider.of<UserDataNotifier>(context, listen: false)
           .getTheUser(value.uid);
     });
@@ -57,15 +60,9 @@ class _TutorsState extends State<Tutors> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
-    // final userdata = Provider.of<UserData>(context);
-
-    // final userdata =
-    //     Provider.of<UserData>(context, listen: false).getTheUser(user.uid);
+    final tutorData = Provider.of<Tutor>(context);
 
     final userdata = context.watch<UserDataNotifier>();
-
-    // print(userdata.user.firstName);
-    // print('slkdjfklsjflsljdf');
 
     var tutor =
         Firestore.instance.collection("Tutors").document(user.uid).get();
@@ -126,7 +123,9 @@ class _TutorsState extends State<Tutors> {
                 ListTile(
                   title: Text("Home"),
                   trailing: Icon(Icons.home),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
                 ),
                 ListTile(
                   title: Text("Classes"),
@@ -147,7 +146,37 @@ class _TutorsState extends State<Tutors> {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => YourClasses()));
                   },
-                )
+                ),
+                ListTile(
+                  title: Text("Profile"),
+                  trailing: Icon(Icons.person),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => EditProfile()));
+                  },
+                ),
+                ListTile(
+                  title: Text("Chats"),
+                  trailing: Icon(Icons.person),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => EditProfile()));
+                  },
+                ),
+                tutorData == null
+                    ? CircularProgressIndicator()
+                    : tutorData.prof == true
+                        ? ListTile(
+                            title: Text("Create Class"),
+                            trailing: Icon(Icons.add),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CreateClass()));
+                            },
+                          )
+                        : ListTile()
               ],
             ),
           ),

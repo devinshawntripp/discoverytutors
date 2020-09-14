@@ -3,6 +3,9 @@ import 'package:disc_t/shared/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+//current bugs with this widget:
+//when choosing a class then unchoosing it it will not update
+
 class PickFromAllClasses extends StatefulWidget {
   // final Function refresh;
   PickFromAllClasses({Key key}) : super(key: key);
@@ -16,31 +19,11 @@ class _PickFromAllClassesState extends State<PickFromAllClasses> {
     Provider.of<ClassDataNotifier>(context, listen: false).getTheClasses();
     Provider.of<UserDataNotifier>(context, listen: false).getTheUserClasses();
 
-    // final i = Provider.of<UserDataNotifier>(context);
-    // final l = Provider.of<ClassDataNotifier>(context);
-
-    // List<String> classesPassed = List<String>();
-    // for (ClassData n in i.classes) {
-    //   if (n.picked == true) {
-    //     int k = 0;
-
-    //     for (ClassData p in l.classes) {
-    //       if (n.classid == p.classid) {
-    //         l.classes[k].picked = true;
-    //       }
-    //       k++;
-    //     }
-    //     // classesPassed.add(n.classid);
-    //     // userdata.getTheUserClasses();
-    //   }
-    // }
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final data = context.watch<ClassDataNotifier>();
     final userdata = context.watch<UserDataNotifier>();
     final user = Provider.of<User>(context);
 
@@ -53,7 +36,6 @@ class _PickFromAllClassesState extends State<PickFromAllClasses> {
         leading: GestureDetector(
           child: Icon(Icons.arrow_back_ios),
           onTap: () {
-            // widget.refresh();
             Navigator.of(context).pop('success');
           },
         ),
@@ -72,20 +54,13 @@ class _PickFromAllClassesState extends State<PickFromAllClasses> {
             child: Text("Add Classes"),
             onPressed: () {
               //get all of the classes that are checked
-              // if (classl != null) {
-              //   for (var k in classl) {
-              //     print(k.classname);
-              //   }
-              // }
+              print(classl);
 
               List<String> classesPassed = List<String>();
               List<String> classesNotPassed = List<String>();
-              for (ClassData n in data.classes) {
-                // print(n.classid);
-                // print(n.picked);
+              for (ClassData n in classl) {
                 if (n.picked == true) {
                   classesPassed.add(n.classid);
-                  // userdata.getTheUserClasses();
                 } else {
                   classesNotPassed.add(n.classid);
                 }
@@ -93,16 +68,24 @@ class _PickFromAllClassesState extends State<PickFromAllClasses> {
 
               userdata.addClassesToUser(classesPassed, user.uid);
               userdata.deleteClassesNotPicked(classesNotPassed, user.uid);
+
+              Provider.of<UserDataNotifier>(context, listen: false)
+                  .getTheUser(user.uid);
+              Provider.of<ClassDataNotifier>(context, listen: false)
+                  .getTheUser(user.uid);
+
+              Provider.of<UserDataNotifier>(context, listen: false)
+                  .getTheUserClasses();
             },
           ),
         ),
         Expanded(
           child: Container(
-            child: data.classes == null
-                ? CircularProgressIndicator()
+            child: classl == null
+                ? Loading()
                 : ListView.builder(
                     shrinkWrap: true,
-                    itemCount: data.classes.length,
+                    itemCount: classl.length,
                     scrollDirection: Axis.vertical,
                     itemBuilder: (context, index) {
                       return Container(
@@ -110,15 +93,14 @@ class _PickFromAllClassesState extends State<PickFromAllClasses> {
                           margin: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0),
                           child: CheckboxListTile(
                             controlAffinity: ListTileControlAffinity.leading,
-                            value: data.classes[index].picked,
+                            value: classl[index].picked,
                             onChanged: (value) {
                               setState(() {
-                                data.classes[index].picked =
-                                    !data.classes[index].picked;
+                                classl[index].picked = !classl[index].picked;
                               });
                             },
-                            title: Text(data.classes[index].classname),
-                            subtitle: Text(data.classes[index].classid),
+                            title: Text(classl[index].classname),
+                            subtitle: Text(classl[index].classid),
                           ),
                         ),
                       );
