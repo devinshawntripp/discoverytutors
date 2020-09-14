@@ -20,37 +20,45 @@ class ClassList extends StatefulWidget {
 
 class _ClassListState extends State<ClassList> {
   @override
-  Widget build(BuildContext context) {
-    List<ClassData> classl = Provider.of<List<ClassData>>(context);
+  void initState() {
+    Provider.of<ClassDataNotifier>(context, listen: false).getTheClasses();
+    super.initState();
+  }
 
-    return classl == null
+  @override
+  Widget build(BuildContext context) {
+    // List<ClassData> classl = Provider.of<List<ClassData>>(context);
+
+    return widget.dataNotif == null
         ? Loading()
         : PageView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: classl.length,
+            itemCount: widget.dataNotif.classes.length,
             controller: PageController(viewportFraction: 0.9),
             itemBuilder: (context, index) {
               return Hero(
                 tag: widget.data[index],
                 child: GestureDetector(
                   onTap: () {
-                    classl[index].currentClass = classl[index];
-                    widget.dataNotif.currentClass = classl[index].currentClass;
+                    widget.dataNotif.currentClass =
+                        widget.dataNotif.classes[index];
+                    // widget.dataNotif.currentClass = classl[index].currentClass;
 
                     Navigator.push(
                         context,
                         MorpheusPageRoute(
                             builder: (context) => ClassPage(
-                                  data: classl[index],
+                                  data: widget.dataNotif.classes[index],
                                 ),
                             transitionToChild: true));
                   },
-                  child: classl == null
+                  child: widget.dataNotif.classes == null
                       ? Loading
                       : ClassTile(
-                          classname: classl[index].classname,
-                          description: classl[index].classdescription,
-                          classcode: classl[index].classid,
+                          classname: widget.dataNotif.classes[index].classname,
+                          description:
+                              widget.dataNotif.classes[index].classdescription,
+                          classcode: widget.dataNotif.classes[index].classid,
                         ),
                 ),
               );

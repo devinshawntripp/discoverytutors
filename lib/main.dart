@@ -20,12 +20,17 @@ class MyApp extends StatelessWidget {
           builder: (_, user, __) {
             return MultiProvider(
               providers: [
-                StreamProvider<List<ClassData>>.value(
-                    value: DatabaseService().classdata),
+                // StreamProvider<List<ClassData>>.value(
+                //     value: DatabaseService().classdata),
                 // StreamProvider<UserData>.value(
                 //     value: Stream.fromFuture(UserData().getTheUserClasses())),
                 // StreamProvider<List<Homework>>.value(
                 //     value: ClassDataNotifier().homework),
+                user == null
+                    ? StreamProvider<List<ClassData>>.value(
+                        value: DatabaseService().classdata)
+                    : StreamProvider<List<ClassData>>.value(
+                        value: DatabaseService(uid: user.uid).classdata),
                 user == null
                     ? StreamProvider<UserData>.value(
                         value: DatabaseService().streamuserdata,

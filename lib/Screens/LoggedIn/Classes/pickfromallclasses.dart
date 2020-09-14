@@ -1,4 +1,5 @@
 import 'package:disc_t/models/user.dart';
+import 'package:disc_t/shared/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +16,25 @@ class _PickFromAllClassesState extends State<PickFromAllClasses> {
     Provider.of<ClassDataNotifier>(context, listen: false).getTheClasses();
     Provider.of<UserDataNotifier>(context, listen: false).getTheUserClasses();
 
+    // final i = Provider.of<UserDataNotifier>(context);
+    // final l = Provider.of<ClassDataNotifier>(context);
+
+    // List<String> classesPassed = List<String>();
+    // for (ClassData n in i.classes) {
+    //   if (n.picked == true) {
+    //     int k = 0;
+
+    //     for (ClassData p in l.classes) {
+    //       if (n.classid == p.classid) {
+    //         l.classes[k].picked = true;
+    //       }
+    //       k++;
+    //     }
+    //     // classesPassed.add(n.classid);
+    //     // userdata.getTheUserClasses();
+    //   }
+    // }
+
     super.initState();
   }
 
@@ -23,6 +43,9 @@ class _PickFromAllClassesState extends State<PickFromAllClasses> {
     final data = context.watch<ClassDataNotifier>();
     final userdata = context.watch<UserDataNotifier>();
     final user = Provider.of<User>(context);
+
+    List<ClassData> classl = Provider.of<List<ClassData>>(context);
+    // print(classl.first.classname);
 
     return Scaffold(
       backgroundColor: Color(0xff3DDC97),
@@ -49,43 +72,58 @@ class _PickFromAllClassesState extends State<PickFromAllClasses> {
             child: Text("Add Classes"),
             onPressed: () {
               //get all of the classes that are checked
+              // if (classl != null) {
+              //   for (var k in classl) {
+              //     print(k.classname);
+              //   }
+              // }
 
               List<String> classesPassed = List<String>();
+              List<String> classesNotPassed = List<String>();
               for (ClassData n in data.classes) {
+                // print(n.classid);
+                // print(n.picked);
                 if (n.picked == true) {
                   classesPassed.add(n.classid);
                   // userdata.getTheUserClasses();
+                } else {
+                  classesNotPassed.add(n.classid);
                 }
               }
 
               userdata.addClassesToUser(classesPassed, user.uid);
+              userdata.deleteClassesNotPicked(classesNotPassed, user.uid);
             },
           ),
         ),
-        Container(
-          child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: data.classes.length,
-              scrollDirection: Axis.vertical,
-              itemBuilder: (context, index) {
-                return Container(
-                  child: Card(
-                    margin: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0),
-                    child: CheckboxListTile(
-                      controlAffinity: ListTileControlAffinity.leading,
-                      value: data.classes[index].picked,
-                      onChanged: (value) {
-                        setState(() {
-                          data.classes[index].picked =
-                              !data.classes[index].picked;
-                        });
-                      },
-                      title: Text(data.classes[index].classname),
-                      subtitle: Text(data.classes[index].classid),
-                    ),
-                  ),
-                );
-              }),
+        Expanded(
+          child: Container(
+            child: data.classes == null
+                ? CircularProgressIndicator()
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: data.classes.length,
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        child: Card(
+                          margin: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0),
+                          child: CheckboxListTile(
+                            controlAffinity: ListTileControlAffinity.leading,
+                            value: data.classes[index].picked,
+                            onChanged: (value) {
+                              setState(() {
+                                data.classes[index].picked =
+                                    !data.classes[index].picked;
+                              });
+                            },
+                            title: Text(data.classes[index].classname),
+                            subtitle: Text(data.classes[index].classid),
+                          ),
+                        ),
+                      );
+                    }),
+          ),
         ),
       ]),
     );

@@ -213,10 +213,11 @@ class _HomeworkListState extends State<HomeworkList> {
 
             // final n = Provider.of<List<Homework>>(context);
             // print(n);
+            return buildUI(classDataNotif, list, user);
 
-            return list == null
-                ? Loading()
-                : buildUI(classDataNotif, list, user);
+            // return list == null
+            //     ? Loading()
+            //     : buildUI(classDataNotif, list, user);
           },
         );
         break;
@@ -229,9 +230,7 @@ class _HomeworkListState extends State<HomeworkList> {
             // final n = Provider.of<List<Homework>>(context);
             // print(n);
 
-            return list == null
-                ? Loading()
-                : buildUI(classDataNotif, list, user);
+            return buildUI(classDataNotif, list, user);
           },
         );
         break;
@@ -244,9 +243,7 @@ class _HomeworkListState extends State<HomeworkList> {
             // final n = Provider.of<List<Homework>>(context);
             // print(n);
 
-            return list == null
-                ? Loading()
-                : buildUI(classDataNotif, list, user);
+            return buildUI(classDataNotif, list, user);
           },
         );
         break;

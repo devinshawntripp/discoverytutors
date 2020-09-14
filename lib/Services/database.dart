@@ -30,6 +30,8 @@ class DatabaseService {
       'rating': 0,
       'classes': FieldValue.arrayUnion(classes),
       'rate': rate,
+      'Contributions': 0,
+      'votes': 0
     });
   }
 
@@ -42,15 +44,68 @@ class DatabaseService {
   }
 
   Stream<List<ClassData>> get classdata {
-    return _firestore.collection("Classes").snapshots().map(
-        (QuerySnapshot snapshot) => snapshot.documents
+    // print("here1");
+    // UserData userdata = UserData.fromTestMap(uid: uid);
+    // userdata.getTheUserClasses;
+    // print(userdata.classes);
+    // print("HERE !");
+
+    return _firestore
+        .collection("Classes")
+        .where('tutors', arrayContains: uid)
+        .snapshots()
+        .map((event) => event.documents
             .map((e) => ClassData.fromUserMap(e.data, e.documentID))
             .toList());
+    // yield* _firestore
+    //     .collection("Classes")
+    //     .snapshots()
+    //     .asyncMap((QuerySnapshot snapshot) => snapshot.documents
+    //         .where((element) {
+    //           print("HERE 2");
+    //           // print("here2");
+    //           // print(element.documentID);
+    //           bool h = false;
+    //           var something =
+    //               _firestore.collection("Tutors").document(uid).get();
+
+    //           _firestore
+    //               .collection("Tutors")
+    //               .document(uid)
+    //               .snapshots()
+    //               .where((event) => event.data.containsValue());
+
+    //           _firestore.collection("Tutors").document(uid).get().then((value) {
+    //             for (var item in value.data['classes']) {
+    //               print("HERE 3");
+    //               // print(item);
+    //               if (element.documentID == item) {
+    //                 print("HERE 4");
+    //                 h = true;
+    //               }
+    //             }
+    //           });
+    //           // for (var i in userdata.classes) {
+    //           //   print(i);
+    //           //   if (element.documentID == i) {
+    //           //     print("here3");
+    //           //     h = true;
+    //           //   }
+    //           // }
+    //           // print("here4");
+    //           return h;
+    //         })
+    //         .map((e) => ClassData.fromUserMap(e.data, e.documentID))
+    //         .toList());
+
+    // return _firestore.collection("Classes").snapshots().map(
+    //     (QuerySnapshot snapshot) => snapshot.documents
+    //         .map((e) => ClassData.fromUserMap(e.data, e.documentID))
+    //         .toList());
   }
 
   Stream<UserData> get streamuserdata {
     //get the user classes first
-
     return _firestore
         .collection("Tutors")
         .document(uid)
@@ -99,23 +154,129 @@ class DatabaseService {
     return tutorsCollection.snapshots().map(_tutorsListFromSnapshot);
   }
 
+  void sumContributions(Tutor tutor) async {
+    int totalContributions = 0;
+    QuerySnapshot snapshot =
+        await Firestore.instance.collection("Classes").getDocuments();
+
+    await Future.forEach(snapshot.documents, (document) async {
+      // ClassData data = ClassData.fromMap(document.data);
+      await Firestore.instance
+          .collection("Classes")
+          .document(document.documentID)
+          .collection("Homework")
+          .getDocuments()
+          .then((value) {
+        value.documents.forEach((element) {
+          if (element.data['uid'] == tutor.docid) {
+            totalContributions++;
+          }
+        });
+      });
+      await Firestore.instance
+          .collection("Classes")
+          .document(document.documentID)
+          .collection("Notes")
+          .getDocuments()
+          .then((value) {
+        value.documents.forEach((element) {
+          if (element.data['uid'] == tutor.docid) {
+            totalContributions++;
+          }
+        });
+      });
+      await Firestore.instance
+          .collection("Classes")
+          .document(document.documentID)
+          .collection("Tests")
+          .getDocuments()
+          .then((value) {
+        value.documents.forEach((element) {
+          if (element.data['uid'] == tutor.docid) {
+            totalContributions++;
+          }
+        });
+      });
+
+      Firestore.instance
+          .collection("Tutors")
+          .document(tutor.docid)
+          .updateData({"Contributions": totalContributions});
+    });
+  }
+
+  void sumVotes(Tutor tutor) async {
+    int totalVotes = 0;
+    QuerySnapshot snapshot =
+        await Firestore.instance.collection("Classes").getDocuments();
+
+    await Future.forEach(snapshot.documents, (document) async {
+      // ClassData data = ClassData.fromMap(document.data);
+      await Firestore.instance
+          .collection("Classes")
+          .document(document.documentID)
+          .collection("Homework")
+          .getDocuments()
+          .then((value) {
+        value.documents.forEach((element) {
+          if (element.data['uid'] == tutor.docid) {
+            totalVotes += element.data['upvotes'] - element.data['downvotes'];
+          }
+        });
+      });
+      await Firestore.instance
+          .collection("Classes")
+          .document(document.documentID)
+          .collection("Notes")
+          .getDocuments()
+          .then((value) {
+        value.documents.forEach((element) {
+          if (element.data['uid'] == tutor.docid) {
+            totalVotes += element.data['upvotes'] - element.data['downvotes'];
+          }
+        });
+      });
+      await Firestore.instance
+          .collection("Classes")
+          .document(document.documentID)
+          .collection("Tests")
+          .getDocuments()
+          .then((value) {
+        value.documents.forEach((element) {
+          if (element.data['uid'] == tutor.docid) {
+            totalVotes += element.data['upvotes'] - element.data['downvotes'];
+          }
+        });
+      });
+
+      Firestore.instance
+          .collection("Tutors")
+          .document(tutor.docid)
+          .updateData({"Contributions": totalVotes});
+    });
+  }
+
   List<Tutor> _tutorsListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.documents.map((doc) {
       if (doc.data['classes'] != null) {
         return Tutor(
+          contributions: doc.data['Contributions'] ?? 0,
           firstName: doc.data['firstname'] ?? '',
           rating: doc.data['rating'] ?? 0,
           docid: doc.documentID,
           classes: doc.data['classes'].cast<String>() ?? [],
           rate: doc.data['rate'] ?? 0,
+          totalVotes: doc.data['totalvotes'] ?? 0,
         );
       } else {
         return Tutor(
+          contributions: doc.data['Contributions'] ?? 0,
           firstName: doc.data['firstname'] ?? '',
           rating: doc.data['rating'] ?? 0,
           docid: doc.documentID,
           classes: [],
           rate: doc.data['rate'] ?? 0,
+          totalVotes: doc.data['totalvotes'] ?? 0,
         );
       }
     }).toList();

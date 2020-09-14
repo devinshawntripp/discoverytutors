@@ -37,10 +37,100 @@ class UserDataNotifier extends ChangeNotifier {
 
   Future<void> getTheUserHomeworks() async {}
 
+  Future<void> deleteClassesNotPicked(
+      List<String> classNotPassed, String uid) async {
+    bool sameClassFound = false;
+
+    // for (String uc in user.classes) {
+    //   print(uc);
+    //   var val = [];
+    //   await Firestore.instance
+    //       .collection("Tutors")
+    //       .document(uid)
+    //       .get()
+    //       .then((value) {
+    //     val = value.data['classes'];
+    //     val.remove(uc);
+
+    //     print(val);
+    //   });
+    // }
+
+    for (String c in classNotPassed) {
+      //search for first class
+      for (String uc in user.classes) {
+        if (c == uc) {
+          sameClassFound = true;
+          // print("TRIED TO ADD A CLASS THAT THE USER ALREADY HAS");
+          var val = [];
+          var valTwo = [];
+          //remove the classid from the user
+          await Firestore.instance
+              .collection("Tutors")
+              .document(uid)
+              .get()
+              .then((value) {
+            val = value.data['classes'];
+            val.remove(c);
+            // val.removeWhere((element) => (element == c));
+            print(val);
+
+            Firestore.instance
+                .collection("Tutors")
+                .document(uid)
+                .updateData({"classes": val});
+          });
+          //remove the uid from the class
+          await Firestore.instance
+              .collection("Classes")
+              .document(c)
+              .get()
+              .then((value) {
+            valTwo = value.data['tutors'];
+            valTwo.remove(uid);
+            Firestore.instance
+                .collection("Classes")
+                .document(c)
+                .updateData({"tutors": valTwo});
+          });
+          print(c);
+        }
+      }
+      // if (sameClassFound == true) {
+      //   var val = [];
+      //   await Firestore.instance
+      //       .collection("Tutors")
+      //       .document(uid)
+      //       .get()
+      //       .then((value) {
+      //     val = value.data['classes'];
+      //     val.remove(c);
+      //     // val.removeWhere((element) => (element == c));
+      //     // print(val);
+
+      //     // Firestore.instance
+      //     //     .collection("Tutors")
+      //     //     .document(uid)
+      //     //     .updateData({"classes": val});
+
+      //     // Firestore.instance
+      //     //     .collection("Classes")
+      //     //     .document(c)
+      //     //     .updateData({"tutors": val});
+      //   });
+      // } else {
+      //   sameClassFound = false;
+      // }
+    }
+
+    notifyListeners();
+  }
+
   Future<void> addClassesToUser(List<String> classesPassed, String uid) async {
     bool sameClassFound = false;
     for (String c in classesPassed) {
       //search for first class
+      // print(c);
       for (String uc in user.classes) {
         if (c == uc) {
           sameClassFound = true;
@@ -49,9 +139,12 @@ class UserDataNotifier extends ChangeNotifier {
       }
       if (sameClassFound == false) {
         //add this class "c" to the users database
-        // print("CLASS BEING ADDED");
+
         await Firestore.instance.collection("Tutors").document(uid).updateData({
           "classes": FieldValue.arrayUnion([c])
+        });
+        await Firestore.instance.collection("Classes").document(c).updateData({
+          "tutors": FieldValue.arrayUnion([uid]) ?? [uid]
         });
         notifyListeners();
       } else {
@@ -71,6 +164,7 @@ class UserDataNotifier extends ChangeNotifier {
           ClassData.fromUserMap(classsnapshot.data, classsnapshot.documentID);
 
       if (data != null) {
+        data.picked = true;
         _classList.add(data);
       }
     }
@@ -145,20 +239,30 @@ class UserData {
     cs = classList;
   }
 
+  UserData.fromTestMap({this.uid});
   UserData({this.firstName, this.rating, this.classes});
 }
 
 class Tutor with ChangeNotifier {
+  int totalVotes;
+  int contributions;
   String firstName;
   final int rating;
   final String docid;
   final int rate;
   final List<String> classes;
 
-  Tutor({this.firstName, this.rating, this.docid, this.classes, this.rate});
+  Tutor(
+      {this.firstName,
+      this.rating,
+      this.docid,
+      this.classes,
+      this.rate,
+      this.contributions,
+      this.totalVotes});
 }
 
-final List<String> classes = ["CSCE 2100", "CSCE 2110", "Automata Theory"];
+// final List<String> classes = ["CSCE 2100", "CSCE 2110", "Automata Theory"];
 
 class AllClassesData {
   final List<String> notes;
@@ -174,6 +278,7 @@ class ClassDataNotifier extends ChangeNotifier {
   Stream<List<Homework>> thehomework;
   Stream<List<Note>> _notes;
   Stream<List<Test>> _tests;
+  UserData _user;
 
   UnmodifiableListView<ClassData> get classList =>
       UnmodifiableListView(_classList);
@@ -181,6 +286,17 @@ class ClassDataNotifier extends ChangeNotifier {
   ClassData get currentClass => _currentClass;
 
   List<ClassData> get classes => _classList;
+
+  String uid;
+
+  UserData get user => _user;
+
+  ClassDataNotifier({this.uid});
+
+  set user(UserData name) {
+    _user = name;
+    notifyListeners();
+  }
 
   // List<Homework> get homework => _homework;
   // List<Note> get notes => _notes;
@@ -305,7 +421,24 @@ class ClassDataNotifier extends ChangeNotifier {
   //   tests = _testsLists;
   // }
 
+  Future<void> getTheUser(String uid) async {
+    DocumentSnapshot snapshot =
+        await Firestore.instance.collection("Tutors").document(uid).get();
+    // print(uid);
+    // print("UID OF THE TUTOR");
+
+    user = UserData.fromMap(snapshot.data);
+    notifyListeners();
+  }
+
   Future<void> getTheClasses() async {
+    // UserData get user => _user;
+
+    // set user(UserData name) {
+    //   _user = name;
+    //   notifyListeners();
+    // }
+
     QuerySnapshot snapshot =
         await Firestore.instance.collection("Classes").getDocuments();
 
@@ -332,7 +465,21 @@ class ClassDataNotifier extends ChangeNotifier {
       ClassData data =
           ClassData.fromMap(document.data, document.documentID, _preList);
 
-      // print("BIG FAT ONE");
+      for (String c in user.classes) {
+        DocumentSnapshot classsnapshot =
+            await Firestore.instance.collection("Classes").document(c).get();
+        print("HERERED");
+
+        if (c == data.classid) {
+          data.picked = true;
+        }
+
+        // if (data != null) {
+        //   data.picked = true;
+        //   _classList.add(data);
+        // }
+      }
+
       // print(document.data);
       if (data != null) {
         _classList.add(data);
@@ -492,6 +639,7 @@ class ClassData {
     classdescription = data['Description'] ?? "";
     documentID = docID;
     classid = data['classid'];
+    picked = true;
   }
 
   ClassData.fromMap(Map<String, dynamic> data, String docID, List<Preq> p) {
@@ -499,6 +647,7 @@ class ClassData {
     classdescription = data['Description'] ?? "";
     documentID = docID;
     classid = data['classid'];
+    // picked = true;
 
     preq = p;
   }

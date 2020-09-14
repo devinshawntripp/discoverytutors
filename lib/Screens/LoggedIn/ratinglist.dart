@@ -21,7 +21,7 @@ class _RatingsListState extends State<RatingsList> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
-        itemCount: 5,
+        itemCount: widget.tutor.rating.round(),
         itemBuilder: (context, index) {
           return StarTile(tutor: widget.tutor);
         },

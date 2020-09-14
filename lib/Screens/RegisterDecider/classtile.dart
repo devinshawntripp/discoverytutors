@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:disc_t/models/user.dart';
 
 class ClassTile extends StatefulWidget {
-  final String classname;
-  ClassTile({this.classname});
+  final ClassData classPassed;
+  ClassTile({this.classPassed});
   @override
   _ClassTileState createState() => _ClassTileState();
 }
@@ -43,7 +43,7 @@ class _ClassTileState extends State<ClassTile> {
                     onTap: (() {
                       setState(() {
                         toggleColor();
-                        addclass(widget.classname);
+                        addclass(widget.classPassed.classid);
                       });
 
                       for (var some in takenClasses) {
@@ -52,12 +52,12 @@ class _ClassTileState extends State<ClassTile> {
 
                       print(selectedColor);
 
-                      print(widget.classname + " Tapped");
+                      print(widget.classPassed.classid + " Tapped");
                     }),
                     contentPadding: EdgeInsets.only(left: 5),
                     leading: Icon(Icons.assignment),
                     title: Text(
-                      widget.classname,
+                      widget.classPassed.classid,
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,

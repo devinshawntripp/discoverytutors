@@ -26,6 +26,7 @@ class _YourClassesState extends State<YourClasses> {
     // Provider.of<ClassDataNotifier>(context, listen: false).getTheClasses();
     // ClassDataNotifier classdatanotif =
     //     Provider.of<ClassDataNotifier>(context, listen: false);
+
     var u = FirebaseAuth.instance.currentUser();
     // final user = Provider.of<User>(context);
     // print(user.uid);
@@ -33,6 +34,8 @@ class _YourClassesState extends State<YourClasses> {
     u.then((value) {
       print(value.uid);
       Provider.of<UserDataNotifier>(context, listen: false)
+          .getTheUser(value.uid);
+      Provider.of<ClassDataNotifier>(context, listen: false)
           .getTheUser(value.uid);
     });
 
@@ -82,12 +85,10 @@ class _YourClassesState extends State<YourClasses> {
                   height: h * .5,
                   child: userdata.classes == null
                       ? Loading()
-                      : userdata.classes.isEmpty
-                          ? Loading()
-                          : UserClassList(
-                              data: userdata.classes,
-                              dataNotif: d,
-                            )),
+                      : UserClassList(
+                          data: userdata.classes,
+                          dataNotif: d,
+                        )),
               RaisedButton(
                 child: Text("Add Class"),
                 onPressed: () {
@@ -98,12 +99,14 @@ class _YourClassesState extends State<YourClasses> {
                       .then((value) {
                     // print(value);
                     if (value == 'success') {
-                      print("DLKJFDKLFJ");
+                      // print("DLKJFDKLFJ");
                       print(value);
                       setState(() {
                         d.getTheClasses();
                         userdata.getTheUser(user.uid);
                         userdata.getTheUserClasses();
+                        Provider.of<UserDataNotifier>(context, listen: false)
+                            .getTheUserClasses();
                       });
                     }
                   });
