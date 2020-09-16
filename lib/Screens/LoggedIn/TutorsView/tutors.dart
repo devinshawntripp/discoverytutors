@@ -5,6 +5,7 @@ import 'package:disc_t/Screens/LoggedIn/Classes/yourclasses.dart';
 import 'package:disc_t/Screens/LoggedIn/TutorsView/userprofile.dart';
 import 'package:disc_t/Services/auth.dart';
 import 'package:disc_t/Services/database.dart';
+import 'package:disc_t/models/tutorModel.dart';
 import 'package:disc_t/models/user.dart';
 import 'package:disc_t/shared/loading.dart';
 import 'package:flutter/material.dart';
@@ -70,8 +71,6 @@ class _TutorsState extends State<Tutors> {
       print(value.data);
     }));
 
-    // final userdata = Provider.of<UserData>(context);
-    // print(userdata.firstName);
     var screensize = MediaQuery.of(context).size;
 
     return StreamProvider<List<Tutor>>.value(

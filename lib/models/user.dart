@@ -155,24 +155,6 @@ class UserData {
     classes = data['classes'].cast<String>() ?? "";
   }
 
-  // Stream<UserData> get userdata {
-  //   Stream<ClassData> d = Firestore.instance
-  //         .collection("Classes")
-  //         .document(c)
-  //         .snapshots()
-  //         .map((event) => ClassData.fromUserMap(event.data, event.documentID));
-  // }
-
-  // Stream<UserData> get userdata {
-  //   FirebaseAuth.instance.currentUser().then((value) {
-  //     return Firestore.instance
-  //         .collection("Tutors")
-  //         .document(value.uid)
-  //         .snapshots()
-  //         .map((event) => UserData.fromMap(event.data));
-  //   });
-  // }
-
   List<ClassData> get cs => classList;
 
   set cs(List<ClassData> s) {
@@ -189,7 +171,6 @@ class UserData {
 
       if (data != null) {
         classList.add(data);
-        // print(data.classdescription);
       }
     }
 
@@ -199,43 +180,6 @@ class UserData {
   UserData.fromTestMap({this.uid});
   UserData({this.firstName, this.rating, this.classes});
 }
-
-class Tutor with ChangeNotifier {
-  int totalVotes;
-  int contributions;
-  String firstName;
-  int rating;
-  String docid;
-  int rate;
-  List<String> classes;
-  bool prof;
-
-  Tutor.fromMap(Map<String, dynamic> data, String docid) {
-    this.totalVotes = data['totalvotes'];
-    this.docid = docid;
-    this.rating = data['rating'];
-    this.rate = data['rate'];
-    this.prof = data['prof'] ?? false;
-    try {
-      this.classes = data['classes'].cast<String>();
-    } catch (error) {}
-
-    this.firstName = data['firstname'];
-    this.contributions = data['Contributions'];
-  }
-
-  Tutor(
-      {this.firstName,
-      this.rating,
-      this.docid,
-      this.classes,
-      this.rate,
-      this.contributions,
-      this.totalVotes,
-      this.prof});
-}
-
-// final List<String> classes = ["CSCE 2100", "CSCE 2110", "Automata Theory"];
 
 class AllClassesData {
   final List<String> notes;
@@ -270,9 +214,6 @@ class ClassDataNotifier extends ChangeNotifier {
     _user = name;
     notifyListeners();
   }
-
-  // List<Homework> get homework => _homework;
-  // List<Note> get notes => _notes;
 
   set homework(Stream<List<Homework>> s) {
     thehomework = s;
@@ -320,98 +261,15 @@ class ClassDataNotifier extends ChangeNotifier {
             event.documents.map((e) => Homework.fromMap(e.data)).toList());
   }
 
-  // Future<void> getTheHomeworks() async {
-  //   // print("INSIDE THE GET HOMEWORK METHOD");
-  //   // print(_currentClass.classid);
-  //   QuerySnapshot snapshot = await Firestore.instance
-  //       .collection("Classes")
-  //       .document(_currentClass.classid)
-  //       .collection("Homework")
-  //       .getDocuments();
-
-  //   List<Homework> _homeworkList = List<Homework>();
-
-  //   await Future.forEach(snapshot.documents, (document) async {
-  //     Homework homeworkData = Homework.fromMap(document.data);
-
-  //     if (homeworkData != null) {
-  //       _homeworkList.add(homeworkData);
-  //     } else {
-  //       print("SOMETHING WENT WRONG");
-  //     }
-  //   });
-
-  //   notifyListeners();
-
-  //   homework = _homeworkList;
-  // }
-
-  // Future<void> getTheNotes() async {
-  //   QuerySnapshot snapshot = await Firestore.instance
-  //       .collection("Classes")
-  //       .document(_currentClass.classid)
-  //       .collection("Notes")
-  //       .getDocuments();
-
-  //   List<Note> _notesList = List<Note>();
-
-  //   await Future.forEach(snapshot.documents, (document) async {
-  //     Note noteData = Note.fromMap(document.data);
-
-  //     if (noteData != null) {
-  //       _notesList.add(noteData);
-  //     } else {
-  //       print("SOMETHING WENT WRONG");
-  //     }
-  //   });
-
-  //   notifyListeners();
-
-  //   notes = _notesList;
-  // }
-
-  // Future<void> getTheTests() async {
-  //   QuerySnapshot snapshot = await Firestore.instance
-  //       .collection("Classes")
-  //       .document(_currentClass.classid)
-  //       .collection("Tests")
-  //       .getDocuments();
-
-  //   List<Test> _testsLists = List<Test>();
-
-  //   await Future.forEach(snapshot.documents, (document) async {
-  //     Test testData = Test.fromMap(document.data);
-
-  //     if (testData != null) {
-  //       _testsLists.add(testData);
-  //     } else {
-  //       print("SOMETHING WENT WRONG");
-  //     }
-  //   });
-
-  //   notifyListeners();
-
-  //   tests = _testsLists;
-  // }
-
   Future<void> getTheUser(String uid) async {
     DocumentSnapshot snapshot =
         await Firestore.instance.collection("Tutors").document(uid).get();
-    // print(uid);
-    // print("UID OF THE TUTOR");
 
     user = UserData.fromMap(snapshot.data);
     notifyListeners();
   }
 
   Future<void> getTheClasses() async {
-    // UserData get user => _user;
-
-    // set user(UserData name) {
-    //   _user = name;
-    //   notifyListeners();
-    // }
-
     QuerySnapshot snapshot =
         await Firestore.instance.collection("Classes").getDocuments();
 
@@ -446,14 +304,8 @@ class ClassDataNotifier extends ChangeNotifier {
         if (c == data.classid) {
           data.picked = true;
         }
-
-        // if (data != null) {
-        //   data.picked = true;
-        //   _classList.add(data);
-        // }
       }
 
-      // print(document.data);
       if (data != null) {
         _classList.add(data);
       }
@@ -476,8 +328,6 @@ class ClassDataNotifier extends ChangeNotifier {
   void onChange() {
     notifyListeners();
   }
-
-  // ClassData({this.classname, this.classdescription});
 }
 
 class Preq {
@@ -597,8 +447,6 @@ class ClassData {
   List<Homework> homeworks;
   List<Note> notes;
   List<Test> tests;
-  // List notes;
-  // List tests;
 
   ClassData({
     this.documentID,
@@ -634,7 +482,6 @@ class ClassData {
     classdescription = data['Description'] ?? "";
     documentID = docID;
     classid = data['classid'];
-    // picked = true;
 
     preq = p;
   }

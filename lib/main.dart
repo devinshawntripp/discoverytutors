@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './Screens/wrapper.dart';
 import './models/user.dart';
+import 'models/tutorModel.dart';
 
 void main() => runApp(MyApp());
 

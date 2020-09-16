@@ -27,8 +27,6 @@ class _ClassListState extends State<ClassList> {
 
   @override
   Widget build(BuildContext context) {
-    // List<ClassData> classl = Provider.of<List<ClassData>>(context);
-
     return widget.dataNotif == null
         ? Loading()
         : PageView.builder(

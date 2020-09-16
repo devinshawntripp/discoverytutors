@@ -1,4 +1,5 @@
 import 'package:disc_t/Screens/LoggedIn/startile.dart';
+import 'package:disc_t/models/tutorModel.dart';
 import 'package:disc_t/models/user.dart';
 import 'package:flutter/material.dart';
 

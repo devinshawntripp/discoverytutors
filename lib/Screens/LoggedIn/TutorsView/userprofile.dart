@@ -1,5 +1,6 @@
 import 'package:disc_t/Screens/LoggedIn/TutorsView/tutorsclasslist.dart';
 import 'package:disc_t/Screens/LoggedIn/ratinglist.dart';
+import 'package:disc_t/models/tutorModel.dart';
 import 'package:disc_t/models/user.dart';
 import 'package:disc_t/shared/loading.dart';
 import 'package:flutter/material.dart';

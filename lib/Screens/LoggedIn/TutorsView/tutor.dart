@@ -1,6 +1,7 @@
 import 'package:disc_t/Screens/LoggedIn/ratinglist.dart';
 import 'package:disc_t/Screens/LoggedIn/TutorsView/tutorsclasslist.dart';
 import 'package:disc_t/Services/database.dart';
+import 'package:disc_t/models/tutorModel.dart';
 import 'package:disc_t/models/user.dart';
 import 'package:flutter/material.dart';
 

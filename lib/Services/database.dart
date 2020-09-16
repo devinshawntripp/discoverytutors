@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:disc_t/Services/auth.dart';
+import 'package:disc_t/models/tutorModel.dart';
 import 'package:disc_t/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,8 @@ class DatabaseService {
       'rate': rate ?? 0,
       'Contributions': 0,
       'totalvotes': 0,
-      'prof': false
+      'prof': false,
+      'tutorID': user.uid
     });
   }
 
