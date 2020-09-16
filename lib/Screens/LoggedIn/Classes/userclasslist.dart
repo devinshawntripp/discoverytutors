@@ -48,7 +48,7 @@ class _UserClassListState extends State<UserClassList> {
                 tag: classl[index],
                 child: GestureDetector(
                   onTap: () {
-                    widget.dataNotif.currentClass = widget.data[index];
+                    // widget.dataNotif.currentClass = widget.data[index];
                     Navigator.push(
                         context,
                         MorpheusPageRoute(

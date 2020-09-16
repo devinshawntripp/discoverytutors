@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:disc_t/Services/auth.dart';
+import 'package:disc_t/models/classMaterialModel.dart';
 import 'package:disc_t/models/tutorModel.dart';
 import 'package:disc_t/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';

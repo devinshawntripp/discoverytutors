@@ -15,30 +15,31 @@ class AllClasses extends StatefulWidget {
 class _AllClassesState extends State<AllClasses> {
   @override
   void initState() {
-    Provider.of<ClassDataNotifier>(context, listen: false).getTheClasses();
+    // Provider.of<ClassDataNotifier>(context, listen: false).getTheClasses();
 
     super.initState();
   }
 
   // ignore: non_constant_identifier_names
-  Widget _BuildUI(ClassDataNotifier data, double h) {
-    if (data.classes == null) {
+  Widget _BuildUI(double h, List<ClassData> classes) {
+    if (classes == null) {
       return Loading();
-    } else if (data.classes.isEmpty) {
+    } else if (classes.isEmpty) {
       return Text("NO DATA FOUND");
     } else {
       return SizedBox(
           height: h * .5,
           child: ClassList(
-            data: data.classes,
-            dataNotif: data,
+            data: classes,
+            // dataNotif: data,
           ));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final d = context.watch<ClassDataNotifier>();
+    // final d = context.watch<ClassDataNotifier>();
+    final classes = Provider.of<List<ClassData>>(context);
 
     double h = MediaQuery.of(context).size.height;
 
@@ -53,7 +54,7 @@ class _AllClassesState extends State<AllClasses> {
           // Expanded(child: ClassList())
 
           Expanded(
-            child: _BuildUI(d, h),
+            child: _BuildUI(h, classes),
           ),
 
           Padding(

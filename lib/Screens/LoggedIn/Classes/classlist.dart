@@ -21,42 +21,40 @@ class ClassList extends StatefulWidget {
 class _ClassListState extends State<ClassList> {
   @override
   void initState() {
-    Provider.of<ClassDataNotifier>(context, listen: false).getTheClasses();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.dataNotif == null
+    return widget.data == null
         ? Loading()
         : PageView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: widget.dataNotif.classes.length,
+            itemCount: widget.data.length,
             controller: PageController(viewportFraction: 0.9),
             itemBuilder: (context, index) {
               return Hero(
                 tag: widget.data[index],
                 child: GestureDetector(
                   onTap: () {
-                    widget.dataNotif.currentClass =
-                        widget.dataNotif.classes[index];
+                    // widget.dataNotif.currentClass =
+                    //     widget.dataNotif.classes[index];
                     // widget.dataNotif.currentClass = classl[index].currentClass;
 
                     Navigator.push(
                         context,
                         MorpheusPageRoute(
                             builder: (context) => ClassPage(
-                                  data: widget.dataNotif.classes[index],
+                                  data: widget.data[index],
                                 ),
                             transitionToChild: true));
                   },
-                  child: widget.dataNotif.classes == null
+                  child: widget.data == null
                       ? Loading
                       : ClassTile(
-                          classname: widget.dataNotif.classes[index].classname,
-                          description:
-                              widget.dataNotif.classes[index].classdescription,
-                          classcode: widget.dataNotif.classes[index].classid,
+                          classname: widget.data[index].classname,
+                          description: widget.data[index].classdescription,
+                          classcode: widget.data[index].classid,
                         ),
                 ),
               );

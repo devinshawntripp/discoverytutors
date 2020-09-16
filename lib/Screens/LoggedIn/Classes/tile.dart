@@ -7,7 +7,8 @@ import 'Homework/homeworklist.dart';
 
 class Tile extends StatefulWidget {
   final String name;
-  Tile({Key key, this.name}) : super(key: key);
+  final ClassData classdata;
+  Tile({Key key, this.name, this.classdata}) : super(key: key);
 
   @override
   _TileState createState() => _TileState();
@@ -16,10 +17,6 @@ class Tile extends StatefulWidget {
 class _TileState extends State<Tile> {
   @override
   void initState() {
-    // Provider.of<ClassDataNotifier>(context, listen: false).getTheHomeworks();
-    // Provider.of<ClassDataNotifier>(context, listen: false).getTheNotes();
-    // Provider.of<ClassDataNotifier>(context, listen: false).getTheTests();
-
     super.initState();
   }
 
@@ -28,7 +25,6 @@ class _TileState extends State<Tile> {
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
 
-    // final classDataNotif = context.watch<ClassDataNotifier>();
     return Container(
       child: GestureDetector(
         onTap: () {
@@ -38,8 +34,9 @@ class _TileState extends State<Tile> {
                   context,
                   MorpheusPageRoute(
                     builder: (context) => HomeworkList(
-                        // homenotetest: classDataNotif.homework,
-                        name: "Homework"),
+                      // homenotetest: classDataNotif.homework,
+                      name: "Homework", classdata: widget.classdata,
+                    ),
                     transitionToChild: true,
                   ));
               break;
@@ -49,7 +46,8 @@ class _TileState extends State<Tile> {
                   MorpheusPageRoute(
                     builder: (context) => HomeworkList(
                         // homenotetest: classDataNotif.notes,
-                        name: "Notes"),
+                        name: "Notes",
+                        classdata: widget.classdata),
                     transitionToChild: true,
                   ));
               break;
@@ -59,7 +57,8 @@ class _TileState extends State<Tile> {
                   MorpheusPageRoute(
                     builder: (context) => HomeworkList(
                         // homenotetest: classDataNotif.tests,
-                        name: "Tests"),
+                        name: "Tests",
+                        classdata: widget.classdata),
                     transitionToChild: true,
                   ));
               break;

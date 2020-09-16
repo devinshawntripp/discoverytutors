@@ -51,8 +51,8 @@ class _TutorsState extends State<Tutors> {
       email = value.email;
 
       // print(value.uid);
-      Provider.of<UserDataNotifier>(context, listen: false)
-          .getTheUser(value.uid);
+      // Provider.of<UserDataNotifier>(context, listen: false)
+      //     .getTheUser(value.uid);
     });
     super.initState();
   }
@@ -62,14 +62,11 @@ class _TutorsState extends State<Tutors> {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
     final tutorData = Provider.of<Tutor>(context);
+    // final userdata = context.watch<UserDataNotifier>();
 
-    final userdata = context.watch<UserDataNotifier>();
-
-    var tutor =
-        Firestore.instance.collection("Tutors").document(user.uid).get();
-    print(tutor.then((value) {
-      print(value.data);
-    }));
+    // var tutor =
+    //     Firestore.instance.collection("Tutors").document(user.uid).get();
+    // print(tutor.then((value) {}));
 
     var screensize = MediaQuery.of(context).size;
 
@@ -107,15 +104,15 @@ class _TutorsState extends State<Tutors> {
             child: ListView(
               children: <Widget>[
                 UserAccountsDrawerHeader(
-                  accountName: userdata.user == null
+                  accountName: tutorData == null
                       ? CircularProgressIndicator()
-                      : Text(userdata.user.firstName),
+                      : Text(tutorData.firstName),
                   accountEmail: Text(user.email),
                   currentAccountPicture: CircleAvatar(
                       backgroundColor: Color(0xff3DDC97),
-                      child: userdata.user == null
+                      child: tutorData == null
                           ? CircularProgressIndicator()
-                          : Text(userdata.user.firstName[0],
+                          : Text(tutorData.firstName[0],
                               style: TextStyle(
                                   fontSize: 30, color: Colors.white))),
                 ),

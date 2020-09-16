@@ -1,7 +1,10 @@
 import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'classMaterialModel.dart';
 
 class User {
   final String uid;
@@ -342,68 +345,6 @@ class Preq {
   Preq({this.classname});
 }
 
-class Homework {
-  String image;
-  String uid;
-  int rank;
-  int upvotes;
-  int downvotes;
-  String docid;
-  String filename;
-
-  Homework.fromMap(Map<String, dynamic> data) {
-    // print("some data");
-    // print(data);
-    image = data['Image'] ?? "";
-    uid = data['uid'] ?? "";
-    rank = data['rank'] ?? 0;
-    upvotes = data['upvotes'] ?? 0;
-    downvotes = data['downvotes'] ?? 0;
-    docid = data['docid'] ?? "";
-    filename = data['filename'] ?? "";
-  }
-}
-
-class Note {
-  String image;
-  String uid;
-  int rank;
-  int upvotes;
-  int downvotes;
-  String docid;
-  String filename;
-
-  Note.fromMap(Map<String, dynamic> data) {
-    image = data['Image'] ?? "";
-    uid = data['uid'] ?? "";
-    rank = data['rank'] ?? 0;
-    upvotes = data['upvotes'] ?? 0;
-    downvotes = data['downvotes'] ?? 0;
-    docid = data['docid'] ?? "";
-    filename = data['filename'] ?? "";
-  }
-}
-
-class Test {
-  String image;
-  String uid;
-  int rank;
-  int upvotes;
-  int downvotes;
-  String docid;
-  String filename;
-
-  Test.fromMap(Map<String, dynamic> data) {
-    image = data['Image'] ?? "";
-    uid = data['uid'] ?? "";
-    rank = data['rank'] ?? 0;
-    upvotes = data['upvotes'] ?? 0;
-    downvotes = data['downvotes'] ?? 0;
-    docid = data['docid'] ?? "";
-    filename = data['filename'] ?? "";
-  }
-}
-
 class UserClassData {
   String documentID;
   String classname;
@@ -444,9 +385,54 @@ class ClassData {
   bool picked = false;
   ClassData currentClass;
 
-  List<Homework> homeworks;
-  List<Note> notes;
-  List<Test> tests;
+  Stream<List<Homework>> homeworks;
+  Stream<List<Note>> notesList;
+  Stream<List<Test>> testsList;
+
+  set homework(Stream<List<Homework>> s) {
+    homeworks = s;
+  }
+
+  set tests(Stream<List<Test>> s) {
+    testsList = s;
+  }
+
+  set notes(Stream<List<Note>> s) {
+    notesList = s;
+  }
+
+  Stream<List<Homework>> get homework {
+    // final Firestore _firestore = Firestore.instance;
+    return Firestore.instance
+        .collection("Classes")
+        .document(classid)
+        .collection("Homework")
+        .snapshots()
+        .map((event) =>
+            event.documents.map((e) => Homework.fromMap(e.data)).toList());
+  }
+
+  Stream<List<Note>> get notes {
+    // final Firestore _firestore = Firestore.instance;
+    return Firestore.instance
+        .collection("Classes")
+        .document(classid)
+        .collection("Notes")
+        .snapshots()
+        .map((event) =>
+            event.documents.map((e) => Note.fromMap(e.data)).toList());
+  }
+
+  Stream<List<Test>> get tests {
+    // final Firestore _firestore = Firestore.instance;
+    return Firestore.instance
+        .collection("Classes")
+        .document(classid)
+        .collection("Tests")
+        .snapshots()
+        .map((event) =>
+            event.documents.map((e) => Test.fromMap(e.data)).toList());
+  }
 
   ClassData({
     this.documentID,

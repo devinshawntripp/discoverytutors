@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:disc_t/Screens/LoggedIn/Classes/Homework/homeworklistpage.dart';
 import 'package:disc_t/Screens/LoggedIn/Classes/Homework/homeworkrowbox.dart';
 import 'package:disc_t/Services/database.dart';
+import 'package:disc_t/models/classMaterialModel.dart';
 import 'package:disc_t/models/user.dart';
 import 'package:disc_t/shared/loading.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -16,8 +17,10 @@ import 'package:provider/provider.dart';
 class HomeworkList extends StatefulWidget {
   final List<dynamic> homenotetest;
   final String name;
+  final ClassData classdata;
 
-  HomeworkList({Key key, this.homenotetest, this.name}) : super(key: key);
+  HomeworkList({Key key, this.homenotetest, this.name, this.classdata})
+      : super(key: key);
 
   @override
   _HomeworkListState createState() => _HomeworkListState();
@@ -42,10 +45,6 @@ class _HomeworkListState extends State<HomeworkList> {
 
   @override
   void initState() {
-    // Provider.of<ClassDataNotifier>(context, listen: false).getTheHomeworks();
-    // Provider.of<ClassDataNotifier>(context, listen: false).getTheNotes();
-    // Provider.of<ClassDataNotifier>(context, listen: false).getTheTests();
-
     super.initState();
   }
 
@@ -56,7 +55,7 @@ class _HomeworkListState extends State<HomeworkList> {
     String classid,
     String doctype,
     BuildContext context,
-    ClassDataNotifier classDataNotif,
+    ClassData classDataNotif,
   ) {
     if (list[index].uid == uid) {
       return IconSlideAction(
@@ -72,25 +71,13 @@ class _HomeworkListState extends State<HomeworkList> {
             behavior: SnackBarBehavior.floating,
           );
           Scaffold.of(context).showSnackBar(snackBar);
-
-          // switch (widget.name) {
-          //   case "Homework":
-          //     // classDataNotif.getTheHomeworks();
-          //     break;
-          //   case "Notes":
-          //     // classDataNotif.getTheNotes();
-          //     break;
-          //   case "Tests":
-          //     // classDataNotif.getTheTests();
-          //     break;
-          // }
         },
       );
     }
   }
 
   Widget buildUI(
-      ClassDataNotifier classDataNotif, List<dynamic> list, User user) {
+      ClassData classd, List<dynamic> list, User user, BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff3DDC97),
       appBar: AppBar(
@@ -141,14 +128,8 @@ class _HomeworkListState extends State<HomeworkList> {
                           )
                         ],
                         secondaryActions: <Widget>[
-                          IconConditional(
-                              user.uid,
-                              list,
-                              index,
-                              classDataNotif.currentClass.classid,
-                              widget.name,
-                              context,
-                              classDataNotif)
+                          IconConditional(user.uid, list, index, classd.classid,
+                              widget.name, context, classd)
                         ],
                       ),
                     ),
@@ -165,17 +146,8 @@ class _HomeworkListState extends State<HomeworkList> {
                 String imageName = path.basename(value.path);
 
                 _database
-                    .createHomework(
-                        user,
-                        imageName,
-                        "",
-                        0,
-                        0,
-                        0,
-                        imageLocation,
-                        classDataNotif.currentClass.classid,
-                        widget.name,
-                        user.uid)
+                    .createHomework(user, imageName, "", 0, 0, 0, imageLocation,
+                        classd.classid, widget.name, user.uid)
                     .then((value) {});
 
                 // _database.fetchClassdata;
@@ -202,18 +174,23 @@ class _HomeworkListState extends State<HomeworkList> {
     final user = Provider.of<User>(context);
     // final homework = Provider.of<List<Homework>>(context);
 
-    final classDataNotif = context.watch<ClassDataNotifier>();
+    // final classDataNotif = context.watch<ClassDataNotifier>();
+
+    // final classes = Provider.of<List<ClassData>>(context);
 
     switch (widget.name) {
       case "Homework":
-        return StreamProvider.value(
-          value: classDataNotif.homework,
+        return StreamProvider<List<Homework>>.value(
+          value: widget.classdata.homework,
           builder: (context, child) {
             final list = Provider.of<List<Homework>>(context);
 
-            // final n = Provider.of<List<Homework>>(context);
-            // print(n);
-            return buildUI(classDataNotif, list, user);
+            // // final n = Provider.of<List<Homework>>(context);
+            // // print(n);
+            return list == null
+                ? Loading()
+                : buildUI(widget.classdata, list, user, context);
+            // return Text("FDDJLKJ");
 
             // return list == null
             //     ? Loading()
@@ -223,27 +200,31 @@ class _HomeworkListState extends State<HomeworkList> {
         break;
       case "Notes":
         return StreamProvider.value(
-          value: classDataNotif.notes,
+          value: widget.classdata.notes,
           builder: (context, child) {
             final list = Provider.of<List<Note>>(context);
 
             // final n = Provider.of<List<Homework>>(context);
             // print(n);
 
-            return buildUI(classDataNotif, list, user);
+            return list == null
+                ? Loading()
+                : buildUI(widget.classdata, list, user, context);
           },
         );
         break;
       case "Tests":
         return StreamProvider.value(
-          value: classDataNotif.tests,
+          value: widget.classdata.tests,
           builder: (context, child) {
             final list = Provider.of<List<Test>>(context);
 
             // final n = Provider.of<List<Homework>>(context);
             // print(n);
 
-            return buildUI(classDataNotif, list, user);
+            return list == null
+                ? Loading()
+                : buildUI(widget.classdata, list, user, context);
           },
         );
         break;

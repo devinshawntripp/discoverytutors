@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:disc_t/Screens/LoggedIn/Classes/classlist.dart';
 import 'package:disc_t/Screens/LoggedIn/Classes/pickfromallclasses.dart';
 import 'package:disc_t/Screens/LoggedIn/Classes/userclasslist.dart';
+import 'package:disc_t/models/tutorModel.dart';
 import 'package:disc_t/models/user.dart';
 import 'package:disc_t/shared/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -32,20 +33,20 @@ class _YourClassesState extends State<YourClasses> {
     // print(user.uid);
 
     u.then((value) {
-      print(value.uid);
-      Provider.of<UserDataNotifier>(context, listen: false)
-          .getTheUser(value.uid);
-      Provider.of<ClassDataNotifier>(context, listen: false)
-          .getTheUser(value.uid);
+      // print(value.uid);
+      // Provider.of<UserDataNotifier>(context, listen: false)
+      //     .getTheUser(value.uid);
+      // Provider.of<ClassDataNotifier>(context, listen: false)
+      //     .getTheUser(value.uid);
     });
 
-    Provider.of<UserDataNotifier>(context, listen: false).getTheUserClasses();
+    // Provider.of<UserDataNotifier>(context, listen: false).getTheUserClasses();
     super.initState();
   }
 
   _refresh() async {
     setState(() {
-      Provider.of<UserDataNotifier>(context, listen: false).getTheUserClasses();
+      // Provider.of<UserDataNotifier>(context, listen: false).getTheUserClasses();
     });
   }
 
@@ -55,68 +56,67 @@ class _YourClassesState extends State<YourClasses> {
     // ClassDataNotifier classData = Provider.of<ClassDataNotifier>(context);
     // List<UserClassData> cData = Provider.of<List<UserClassData>>(context);
     // final d = context.watch<ClassDataNotifier>();
-    final d = context.watch<ClassDataNotifier>();
+    // final d = context.watch<ClassDataNotifier>();
 
-    final userdata = context.watch<UserDataNotifier>();
+    // final userdata = context.watch<UserDataNotifier>();
     // List<ClassData> classl = Provider.of<List<ClassData>>(context);
-    final user = Provider.of<User>(context);
+    // final user = Provider.of<User>(context);
 
-    UserData data = Provider.of<UserData>(context);
+    Tutor userdata = Provider.of<Tutor>(context);
+
+    // UserData data = Provider.of<UserData>(context);
 
     double h = MediaQuery.of(context).size.height;
 
+    List<ClassData> classd = Provider.of<List<ClassData>>(context);
+    // if (classd != null) {
+    //   var userCLasses = classd.where((element) => (element.picked == true));
+
+    //   print(userCLasses);
+    // }
+    List<ClassData> userClasses =
+        classd.where((element) => (element.picked == true)).toList();
+    // return Text("asfdadfa");
+
     // print(data);
-    return Scaffold(
-      backgroundColor: Color(0xff3DDC97),
-      appBar: AppBar(
-        backgroundColor: Color(0xff7211E0),
-        title: userdata.user == null
-            ? CircularProgressIndicator()
-            : Text(userdata.user.firstName ?? ""),
-      ),
-      body: Container(
-          // padding: EdgeInsets.symmetric(vertical: h / 8),
-          padding: EdgeInsets.fromLTRB(0, h / 8, 0, 0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              SizedBox(
-                  height: h * .5,
-                  child: userdata.classes == null
-                      ? Loading()
-                      : UserClassList(
-                          data: userdata.classes,
-                          dataNotif: d,
-                        )),
-              RaisedButton(
-                child: Text("Add Class"),
-                onPressed: () {
-                  Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PickFromAllClasses()))
-                      .then((value) {
-                    // print(value);
-                    if (value == 'success') {
-                      // print("DLKJFDKLFJ");
-                      print(value);
-                      setState(() {
-                        d.getTheClasses();
-                        userdata.getTheUser(user.uid);
-                        userdata.getTheUserClasses();
-                        Provider.of<UserDataNotifier>(context, listen: false)
-                            .getTheUserClasses();
-                      });
-                    }
-                  });
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-                color: Colors.blue,
-              )
-            ],
-          )),
-    );
+    return userClasses == null
+        ? Loading()
+        : Scaffold(
+            backgroundColor: Color(0xff3DDC97),
+            appBar: AppBar(
+              backgroundColor: Color(0xff7211E0),
+              title: userdata == null
+                  ? CircularProgressIndicator()
+                  : Text(userdata.firstName ?? ""),
+            ),
+            body: Container(
+                // padding: EdgeInsets.symmetric(vertical: h / 8),
+                padding: EdgeInsets.fromLTRB(0, h / 8, 0, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    SizedBox(
+                        height: h * .5,
+                        child: userdata.classes == null
+                            ? Loading()
+                            : UserClassList(
+                                data: userClasses,
+                              )),
+                    RaisedButton(
+                      child: Text("Add Class"),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PickFromAllClasses()));
+                      },
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      color: Colors.blue,
+                    )
+                  ],
+                )),
+          );
   }
 }

@@ -20,8 +20,6 @@ class ClassPage extends StatefulWidget {
 class _ClassPageState extends State<ClassPage> {
   @override
   void initState() {
-    // Provider.of<ClassDataNotifier>(context, listen: false).getTheHomeworks();
-
     super.initState();
   }
 
@@ -41,9 +39,18 @@ class _ClassPageState extends State<ClassPage> {
         body: Center(
           child: Column(
             children: <Widget>[
-              Tile(name: "Homework"),
-              Tile(name: "Notes"),
-              Tile(name: "Tests"),
+              Tile(
+                name: "Homework",
+                classdata: widget.data,
+              ),
+              Tile(
+                name: "Notes",
+                classdata: widget.data,
+              ),
+              Tile(
+                name: "Tests",
+                classdata: widget.data,
+              ),
               Expanded(
                 child: Text(""),
               ),

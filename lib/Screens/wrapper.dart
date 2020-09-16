@@ -11,10 +11,7 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
-    // final userdata = Provider.of<UserData>(context);
-    //print("User data = ${user.uid}");
-    // print("the user data is " + userdata.toString());
-    print(" I WAS ABLE TO REACH HERE");
+
     //either return the sign in and register widget or return the Tutors widget
     if (user == null) {
       return SignIn();
