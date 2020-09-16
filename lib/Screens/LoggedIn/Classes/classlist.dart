@@ -11,9 +11,7 @@ import 'package:provider/provider.dart';
 class ClassList extends StatefulWidget {
   final List<ClassData> data;
 
-  final ClassDataNotifier dataNotif;
-
-  const ClassList({Key key, this.data, this.dataNotif}) : super(key: key);
+  const ClassList({Key key, this.data}) : super(key: key);
   @override
   _ClassListState createState() => _ClassListState();
 }

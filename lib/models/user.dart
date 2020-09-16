@@ -13,325 +13,193 @@ class User {
   User({this.uid, this.email});
 }
 
-class UserDataNotifier extends ChangeNotifier {
-  UserData _user;
-  List<ClassData> _classes;
-  List<Homework> _homeworks;
+// class UserData {
+//   String uid;
+//   String firstName;
+//   int rating;
+//   List<String> classes;
+//   List<ClassData> classList = List<ClassData>();
 
-  UserData get user => _user;
-  List<Homework> get homeworks => _homeworks;
+//   UserData.fromMap(Map<String, dynamic> data) {
+//     firstName = data['firstname'] ?? "";
+//     rating = data['rating'] ?? "";
+//     classes = data['classes'].cast<String>() ?? "";
+//   }
 
-  List<ClassData> get classes => _classes;
+//   List<ClassData> get cs => classList;
 
-  set user(UserData name) {
-    _user = name;
-    notifyListeners();
-  }
+//   set cs(List<ClassData> s) {
+//     cs = s;
+//   }
 
-  set classes(List<ClassData> c) {
-    _classes = c;
-    notifyListeners();
-  }
+//   Future get getTheUserClasses async {
+//     for (String c in classes) {
+//       DocumentSnapshot classsnapshot =
+//           await Firestore.instance.collection("Classes").document(c).get();
 
-  set homeworks(List<Homework> h) {
-    _homeworks = h;
-    notifyListeners();
-  }
+//       final data =
+//           ClassData.fromUserMap(classsnapshot.data, classsnapshot.documentID);
 
-  Future<void> getTheUserHomeworks() async {}
+//       if (data != null) {
+//         classList.add(data);
+//       }
+//     }
 
-  Future<void> deleteClassesNotPicked(
-      List<String> classNotPassed, String uid) async {
-    for (String c in classNotPassed) {
-      //search for first class
-      for (String uc in user.classes) {
-        if (c == uc) {
-          var val = [];
-          var valTwo = [];
-          //remove the classid from the user
-          await Firestore.instance
-              .collection("Tutors")
-              .document(uid)
-              .get()
-              .then((value) {
-            val = value.data['classes'];
-            val.remove(c);
-            // val.removeWhere((element) => (element == c));
-            // print(val);
+//     cs = classList;
+//   }
 
-            Firestore.instance
-                .collection("Tutors")
-                .document(uid)
-                .updateData({"classes": val});
-          });
-          //remove the uid from the class
-          await Firestore.instance
-              .collection("Classes")
-              .document(c)
-              .get()
-              .then((value) {
-            valTwo = value.data['tutors'];
-            valTwo.remove(uid);
-            Firestore.instance
-                .collection("Classes")
-                .document(c)
-                .updateData({"tutors": valTwo});
-          });
-          print(c);
-        }
-      }
-    }
+//   UserData.fromTestMap({this.uid});
+//   UserData({this.firstName, this.rating, this.classes});
+// }
 
-    notifyListeners();
-  }
+// class AllClassesData {
+//   final List<String> notes;
+//   final List<String> homework;
+//   final List<String> tests;
 
-  Future<void> addClassesToUser(List<String> classesPassed, String uid) async {
-    bool sameClassFound = false;
-    for (String c in classesPassed) {
-      //search for first class
-      // print(c);
-      for (String uc in user.classes) {
-        if (c == uc) {
-          sameClassFound = true;
-          // print("TRIED TO ADD A CLASS THAT THE USER ALREADY HAS");
-        }
-      }
-      if (sameClassFound == false) {
-        //add this class "c" to the users database
-        print(c);
+//   AllClassesData({this.notes, this.homework, this.tests});
+// }
 
-        await Firestore.instance.collection("Tutors").document(uid).updateData({
-          "classes": FieldValue.arrayUnion([c])
-        });
-        await Firestore.instance.collection("Classes").document(c).updateData({
-          "tutors": FieldValue.arrayUnion([uid]) ?? [uid]
-        });
-        notifyListeners();
-      } else {
-        sameClassFound = false;
-      }
-    }
-  }
+// class ClassDataNotifier extends ChangeNotifier {
+//   List<ClassData> _classList;
+//   ClassData _currentClass;
+//   Stream<List<Homework>> thehomework;
+//   Stream<List<Note>> _notes;
+//   Stream<List<Test>> _tests;
+//   UserData _user;
 
-  Future<void> getTheUserClasses() async {
-    List<ClassData> _classList = List<ClassData>();
+//   UnmodifiableListView<ClassData> get classList =>
+//       UnmodifiableListView(_classList);
 
-    for (String c in user.classes) {
-      DocumentSnapshot classsnapshot =
-          await Firestore.instance.collection("Classes").document(c).get();
+//   ClassData get currentClass => _currentClass;
 
-      final data =
-          ClassData.fromUserMap(classsnapshot.data, classsnapshot.documentID);
+//   List<ClassData> get classes => _classList;
 
-      if (data != null) {
-        data.picked = true;
-        _classList.add(data);
-      }
-    }
+//   String uid;
 
-    notifyListeners();
+//   UserData get user => _user;
 
-    classes = _classList;
-  }
+//   ClassDataNotifier({this.uid});
 
-  Future<void> getTheUser(String uid) async {
-    DocumentSnapshot snapshot =
-        await Firestore.instance.collection("Tutors").document(uid).get();
-    // print(uid);
-    // print("UID OF THE TUTOR");
+//   set user(UserData name) {
+//     _user = name;
+//     notifyListeners();
+//   }
 
-    user = UserData.fromMap(snapshot.data);
-    notifyListeners();
-  }
-}
+//   set homework(Stream<List<Homework>> s) {
+//     thehomework = s;
+//     notifyListeners();
+//   }
 
-class UserData {
-  String uid;
-  String firstName;
-  int rating;
-  List<String> classes;
-  List<ClassData> classList = List<ClassData>();
+//   set tests(Stream<List<Test>> s) {
+//     _tests = s;
+//     notifyListeners();
+//   }
 
-  UserData.fromMap(Map<String, dynamic> data) {
-    firstName = data['firstname'] ?? "";
-    rating = data['rating'] ?? "";
-    classes = data['classes'].cast<String>() ?? "";
-  }
+//   set notes(Stream<List<Note>> s) {
+//     _notes = s;
+//     notifyListeners();
+//   }
 
-  List<ClassData> get cs => classList;
+//   Stream<List<Note>> get notes {
+//     return Firestore.instance
+//         .collection("Classes")
+//         .document(_currentClass.classid)
+//         .collection("Notes")
+//         .snapshots()
+//         .map((event) =>
+//             event.documents.map((e) => Note.fromMap(e.data)).toList());
+//   }
 
-  set cs(List<ClassData> s) {
-    cs = s;
-  }
+//   Stream<List<Test>> get tests {
+//     return Firestore.instance
+//         .collection("Classes")
+//         .document(_currentClass.classid)
+//         .collection("Tests")
+//         .snapshots()
+//         .map((event) =>
+//             event.documents.map((e) => Test.fromMap(e.data)).toList());
+//   }
 
-  Future get getTheUserClasses async {
-    for (String c in classes) {
-      DocumentSnapshot classsnapshot =
-          await Firestore.instance.collection("Classes").document(c).get();
+//   Stream<List<Homework>> get homework {
+//     // print(_currentClass.classid);
+//     return Firestore.instance
+//         .collection("Classes")
+//         .document(_currentClass.classid)
+//         .collection("Homework")
+//         .snapshots()
+//         .map((event) =>
+//             event.documents.map((e) => Homework.fromMap(e.data)).toList());
+//   }
 
-      final data =
-          ClassData.fromUserMap(classsnapshot.data, classsnapshot.documentID);
+//   Future<void> getTheUser(String uid) async {
+//     DocumentSnapshot snapshot =
+//         await Firestore.instance.collection("Tutors").document(uid).get();
 
-      if (data != null) {
-        classList.add(data);
-      }
-    }
+//     user = UserData.fromMap(snapshot.data);
+//     notifyListeners();
+//   }
 
-    cs = classList;
-  }
+//   Future<void> getTheClasses() async {
+//     QuerySnapshot snapshot =
+//         await Firestore.instance.collection("Classes").getDocuments();
 
-  UserData.fromTestMap({this.uid});
-  UserData({this.firstName, this.rating, this.classes});
-}
+//     List<ClassData> _classList = List<ClassData>();
 
-class AllClassesData {
-  final List<String> notes;
-  final List<String> homework;
-  final List<String> tests;
+//     await Future.forEach(snapshot.documents, (document) async {
+//       // ClassData data = ClassData.fromMap(document.data);
+//       QuerySnapshot pre = await Firestore.instance
+//           .collection("Classes")
+//           .document(document.documentID)
+//           .collection("Pre")
+//           .getDocuments();
 
-  AllClassesData({this.notes, this.homework, this.tests});
-}
+//       List<Preq> _preList = List<Preq>();
 
-class ClassDataNotifier extends ChangeNotifier {
-  List<ClassData> _classList;
-  ClassData _currentClass;
-  Stream<List<Homework>> thehomework;
-  Stream<List<Note>> _notes;
-  Stream<List<Test>> _tests;
-  UserData _user;
+//       pre.documents.forEach((preClass) {
+//         Preq preqData = Preq.fromMap(preClass.data);
 
-  UnmodifiableListView<ClassData> get classList =>
-      UnmodifiableListView(_classList);
+//         if (preClass.data != null) {
+//           _preList.add(preqData);
+//         }
+//       });
 
-  ClassData get currentClass => _currentClass;
+//       ClassData data =
+//           ClassData.fromMap(document.data, document.documentID, _preList);
 
-  List<ClassData> get classes => _classList;
+//       for (String c in user.classes) {
+//         DocumentSnapshot classsnapshot =
+//             await Firestore.instance.collection("Classes").document(c).get();
+//         print("HERERED");
 
-  String uid;
+//         if (c == data.classid) {
+//           data.picked = true;
+//         }
+//       }
 
-  UserData get user => _user;
+//       if (data != null) {
+//         _classList.add(data);
+//       }
+//     });
 
-  ClassDataNotifier({this.uid});
+//     notifyListeners();
 
-  set user(UserData name) {
-    _user = name;
-    notifyListeners();
-  }
+//     classes = _classList;
+//   }
 
-  set homework(Stream<List<Homework>> s) {
-    thehomework = s;
-    notifyListeners();
-  }
+//   set classes(List<ClassData> s) {
+//     _classList = s;
+//     notifyListeners();
+//   }
 
-  set tests(Stream<List<Test>> s) {
-    _tests = s;
-    notifyListeners();
-  }
+//   set currentClass(ClassData s) {
+//     _currentClass = s;
+//   }
 
-  set notes(Stream<List<Note>> s) {
-    _notes = s;
-    notifyListeners();
-  }
-
-  Stream<List<Note>> get notes {
-    return Firestore.instance
-        .collection("Classes")
-        .document(_currentClass.classid)
-        .collection("Notes")
-        .snapshots()
-        .map((event) =>
-            event.documents.map((e) => Note.fromMap(e.data)).toList());
-  }
-
-  Stream<List<Test>> get tests {
-    return Firestore.instance
-        .collection("Classes")
-        .document(_currentClass.classid)
-        .collection("Tests")
-        .snapshots()
-        .map((event) =>
-            event.documents.map((e) => Test.fromMap(e.data)).toList());
-  }
-
-  Stream<List<Homework>> get homework {
-    // print(_currentClass.classid);
-    return Firestore.instance
-        .collection("Classes")
-        .document(_currentClass.classid)
-        .collection("Homework")
-        .snapshots()
-        .map((event) =>
-            event.documents.map((e) => Homework.fromMap(e.data)).toList());
-  }
-
-  Future<void> getTheUser(String uid) async {
-    DocumentSnapshot snapshot =
-        await Firestore.instance.collection("Tutors").document(uid).get();
-
-    user = UserData.fromMap(snapshot.data);
-    notifyListeners();
-  }
-
-  Future<void> getTheClasses() async {
-    QuerySnapshot snapshot =
-        await Firestore.instance.collection("Classes").getDocuments();
-
-    List<ClassData> _classList = List<ClassData>();
-
-    await Future.forEach(snapshot.documents, (document) async {
-      // ClassData data = ClassData.fromMap(document.data);
-      QuerySnapshot pre = await Firestore.instance
-          .collection("Classes")
-          .document(document.documentID)
-          .collection("Pre")
-          .getDocuments();
-
-      List<Preq> _preList = List<Preq>();
-
-      pre.documents.forEach((preClass) {
-        Preq preqData = Preq.fromMap(preClass.data);
-
-        if (preClass.data != null) {
-          _preList.add(preqData);
-        }
-      });
-
-      ClassData data =
-          ClassData.fromMap(document.data, document.documentID, _preList);
-
-      for (String c in user.classes) {
-        DocumentSnapshot classsnapshot =
-            await Firestore.instance.collection("Classes").document(c).get();
-        print("HERERED");
-
-        if (c == data.classid) {
-          data.picked = true;
-        }
-      }
-
-      if (data != null) {
-        _classList.add(data);
-      }
-    });
-
-    notifyListeners();
-
-    classes = _classList;
-  }
-
-  set classes(List<ClassData> s) {
-    _classList = s;
-    notifyListeners();
-  }
-
-  set currentClass(ClassData s) {
-    _currentClass = s;
-  }
-
-  void onChange() {
-    notifyListeners();
-  }
-}
+//   void onChange() {
+//     notifyListeners();
+//   }
+// }
 
 class Preq {
   String classname;
@@ -343,37 +211,6 @@ class Preq {
   }
 
   Preq({this.classname});
-}
-
-class UserClassData {
-  String documentID;
-  String classname;
-  String classdescription;
-  List<Preq> preq;
-
-  List<Homework> homeworks;
-  List<Note> notes;
-  List<Test> tests;
-
-  UserClassData.fromUserMap(Map<String, dynamic> data, String docID) {
-    classname = data['Title'] ?? "";
-    classdescription = data['Description'] ?? "";
-    documentID = docID;
-  }
-
-  UserClassData.fromMap(Map<String, dynamic> data, String docID, List<Preq> p,
-      List<Homework> homeworks, List<Note> notes, List<Test> tests) {
-    classname = data['Title'] ?? "";
-    classdescription = data['Description'] ?? "";
-    documentID = docID;
-
-    print("HERE");
-    print(p[0].classname);
-    preq = p;
-    this.homeworks = homeworks;
-    this.notes = notes;
-    this.tests = tests;
-  }
 }
 
 class ClassData {

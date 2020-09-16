@@ -39,19 +39,19 @@ class MyApp extends StatelessWidget {
                         value: DatabaseService().classdata)
                     : StreamProvider<List<ClassData>>.value(
                         value: DatabaseService(uid: user.uid).classdata),
-                user == null
-                    ? StreamProvider<UserData>.value(
-                        value: DatabaseService().streamuserdata,
-                      )
-                    : StreamProvider<UserData>.value(
-                        value: DatabaseService(uid: user.uid).streamuserdata,
-                      ),
-                ChangeNotifierProvider(
-                  create: (context) => ClassDataNotifier(),
-                ),
-                ChangeNotifierProvider(
-                  create: (context) => UserDataNotifier(),
-                )
+                // user == null
+                //     ? StreamProvider<UserData>.value(
+                //         value: DatabaseService().streamuserdata,
+                //       )
+                //     : StreamProvider<UserData>.value(
+                //         value: DatabaseService(uid: user.uid).streamuserdata,
+                //       ),
+                // ChangeNotifierProvider(
+                //   create: (context) => ClassDataNotifier(),
+                // ),
+                // ChangeNotifierProvider(
+                //   create: (context) => UserDataNotifier(),
+                // )
                 // StreamProvider<UserData>.value(
                 //   value: DatabaseService().userdata,
                 // ),

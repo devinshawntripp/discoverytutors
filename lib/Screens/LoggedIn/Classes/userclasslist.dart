@@ -12,9 +12,9 @@ import 'package:provider/provider.dart';
 class UserClassList extends StatefulWidget {
   final List<ClassData> data;
 
-  final ClassDataNotifier dataNotif;
+  // final ClassDataNotifier dataNotif;
 
-  const UserClassList({Key key, this.data, this.dataNotif}) : super(key: key);
+  const UserClassList({Key key, this.data}) : super(key: key);
   @override
   _UserClassListState createState() => _UserClassListState();
 }
@@ -22,8 +22,8 @@ class UserClassList extends StatefulWidget {
 class _UserClassListState extends State<UserClassList> {
   @override
   void initState() {
-    ClassDataNotifier classdatanotif =
-        Provider.of<ClassDataNotifier>(context, listen: false);
+    // ClassDataNotifier classdatanotif =
+    //     Provider.of<ClassDataNotifier>(context, listen: false);
   }
 
   @override
