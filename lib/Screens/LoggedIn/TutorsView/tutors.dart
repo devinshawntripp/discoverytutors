@@ -1,16 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:disc_t/Screens/LoggedIn/ChatView/chatsview.dart';
 import 'package:disc_t/Screens/LoggedIn/Classes/createclass.dart';
-import 'package:disc_t/Screens/LoggedIn/Classes/pickfromallclasses.dart';
+
 import 'package:disc_t/Screens/LoggedIn/Classes/yourclasses.dart';
 import 'package:disc_t/Screens/LoggedIn/TutorsView/userprofile.dart';
 import 'package:disc_t/Services/auth.dart';
 import 'package:disc_t/Services/database.dart';
 import 'package:disc_t/models/tutorModel.dart';
 import 'package:disc_t/models/user.dart';
-import 'package:disc_t/shared/loading.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'tutorslist.dart';
 import '../Classes/allclasses.dart';
 
@@ -145,7 +145,7 @@ class _TutorsState extends State<Tutors> {
                   trailing: Icon(Icons.person),
                   onTap: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => EditProfile()));
+                        MaterialPageRoute(builder: (context) => ChatsView()));
                   },
                 ),
                 tutorData == null

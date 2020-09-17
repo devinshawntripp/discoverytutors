@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Message {
   String content;
   String idfrom;
-  String timeStamp;
+  Timestamp timeStamp;
   String type;
 
   Message.fromMap(Map<String, dynamic> data) {

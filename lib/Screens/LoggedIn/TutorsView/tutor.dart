@@ -176,16 +176,11 @@ class _TutorClassState extends State<TutorClass> {
                                                   widget.tutor, userTutor);
                                             }
 
-                                            // List<ChatModel> userChats =
-                                            //     Provider.of<List<ChatModel>>();
-
                                             if (userChats != null) {
-                                              var chat = userChats.firstWhere(
-                                                  (element) => element.tutorIDS
-                                                      .contains(
+                                              ChatModel chat = userChats
+                                                  .firstWhere((element) =>
+                                                      element.tutorIDS.contains(
                                                           widget.tutor.docid));
-
-                                              // print(chat.chatID);
 
                                               Navigator.push(
                                                   context,

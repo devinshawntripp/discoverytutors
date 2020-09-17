@@ -43,6 +43,8 @@ class DatabaseService {
   Future createChat(Tutor tutorClicked, Tutor userTutor) async {
     return await Firestore.instance.collection("Chats").add({
       'tutors': FieldValue.arrayUnion([tutorClicked.docid, userTutor.docid]),
+      'tutorNames':
+          FieldValue.arrayUnion([tutorClicked.firstName, userTutor.firstName]),
       'timestamp': FieldValue.serverTimestamp()
     }).then((value) {
       tutorsCollection.document(tutorClicked.docid).updateData({
