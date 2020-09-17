@@ -24,36 +24,30 @@ class Tutors extends StatefulWidget {
 class _TutorsState extends State<Tutors> {
   final AuthService _auth = AuthService();
 
-  String userFirstName = "test";
+  // String userFirstName = "test";
 
-  dynamic data;
-  var email = "";
+  // dynamic data;
+  // var email = "";
 
-  Future<dynamic> getData(userid) async {
-    final DocumentReference document =
-        Firestore.instance.collection("Tutors").document(userid);
+  // Future<dynamic> getData(userid) async {
+  //   final DocumentReference document =
+  //       Firestore.instance.collection("Tutors").document(userid);
 
-    await document.get().then<dynamic>((DocumentSnapshot snapshot) async {
-      setState(() {
-        data = snapshot.data;
-      });
-    });
-  }
+  //   await document.get().then<dynamic>((DocumentSnapshot snapshot) async {
+  //     setState(() {
+  //       data = snapshot.data;
+  //     });
+  //   });
+  // }
 
   @override
   void initState() {
-    var u = FirebaseAuth.instance.currentUser();
-    // final user = Provider.of<User>(context);
-    // print(user.uid);
+    // var u = FirebaseAuth.instance.currentUser();
 
-    u.then((value) {
-      getData(value.uid);
-      email = value.email;
-
-      // print(value.uid);
-      // Provider.of<UserDataNotifier>(context, listen: false)
-      //     .getTheUser(value.uid);
-    });
+    // u.then((value) {
+    //   getData(value.uid);
+    //   email = value.email;
+    // });
     super.initState();
   }
 
@@ -62,11 +56,6 @@ class _TutorsState extends State<Tutors> {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
     final tutorData = Provider.of<Tutor>(context);
-    // final userdata = context.watch<UserDataNotifier>();
-
-    // var tutor =
-    //     Firestore.instance.collection("Tutors").document(user.uid).get();
-    // print(tutor.then((value) {}));
 
     var screensize = MediaQuery.of(context).size;
 

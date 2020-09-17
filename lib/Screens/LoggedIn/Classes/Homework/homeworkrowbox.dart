@@ -1,8 +1,4 @@
-import 'dart:io';
-
-import 'package:disc_t/CustomShapes/customline.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class HomeworkRowBox extends StatefulWidget {
   final dynamic homenotetest;

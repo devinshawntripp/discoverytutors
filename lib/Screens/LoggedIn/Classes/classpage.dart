@@ -1,11 +1,6 @@
 import 'package:disc_t/Screens/LoggedIn/Classes/tile.dart';
 import 'package:disc_t/models/user.dart';
 import 'package:flutter/material.dart';
-import 'package:morpheus/page_routes/morpheus_page_route.dart';
-import 'package:provider/provider.dart';
-
-import 'Homework/homeworklist.dart';
-import 'Homework/homeworklistpage.dart';
 
 //this class will show the homework, notes, and tests data
 class ClassPage extends StatefulWidget {

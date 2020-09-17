@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:disc_t/Screens/LoggedIn/Classes/Homework/homeworklistpage.dart';
 import 'package:disc_t/Screens/LoggedIn/Classes/Homework/homeworkrowbox.dart';
 import 'package:disc_t/Services/database.dart';
@@ -172,11 +171,6 @@ class _HomeworkListState extends State<HomeworkList> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
-    // final homework = Provider.of<List<Homework>>(context);
-
-    // final classDataNotif = context.watch<ClassDataNotifier>();
-
-    // final classes = Provider.of<List<ClassData>>(context);
 
     switch (widget.name) {
       case "Homework":
@@ -190,11 +184,6 @@ class _HomeworkListState extends State<HomeworkList> {
             return list == null
                 ? Loading()
                 : buildUI(widget.classdata, list, user, context);
-            // return Text("FDDJLKJ");
-
-            // return list == null
-            //     ? Loading()
-            //     : buildUI(classDataNotif, list, user);
           },
         );
         break;
@@ -203,10 +192,6 @@ class _HomeworkListState extends State<HomeworkList> {
           value: widget.classdata.notes,
           builder: (context, child) {
             final list = Provider.of<List<Note>>(context);
-
-            // final n = Provider.of<List<Homework>>(context);
-            // print(n);
-
             return list == null
                 ? Loading()
                 : buildUI(widget.classdata, list, user, context);
@@ -219,15 +204,14 @@ class _HomeworkListState extends State<HomeworkList> {
           builder: (context, child) {
             final list = Provider.of<List<Test>>(context);
 
-            // final n = Provider.of<List<Homework>>(context);
-            // print(n);
-
             return list == null
                 ? Loading()
                 : buildUI(widget.classdata, list, user, context);
           },
         );
         break;
+      default:
+        return Text("DIDNT WORK");
     }
   }
 

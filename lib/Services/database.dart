@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:disc_t/Services/auth.dart';
+import 'package:disc_t/models/chatModel.dart';
 import 'package:disc_t/models/classMaterialModel.dart';
 import 'package:disc_t/models/tutorModel.dart';
 import 'package:disc_t/models/user.dart';
@@ -39,6 +40,22 @@ class DatabaseService {
     });
   }
 
+  Future createChat(Tutor tutorClicked, Tutor userTutor) async {
+    return await Firestore.instance.collection("Chats").add({
+      'tutors': FieldValue.arrayUnion([tutorClicked.docid, userTutor.docid]),
+      'timestamp': FieldValue.serverTimestamp()
+    }).then((value) {
+      tutorsCollection.document(tutorClicked.docid).updateData({
+        'chats': FieldValue.arrayUnion([value.documentID]),
+        'chatsWith': FieldValue.arrayUnion([userTutor.docid])
+      });
+      tutorsCollection.document(userTutor.docid).updateData({
+        'chats': FieldValue.arrayUnion([value.documentID]),
+        'chatsWith': FieldValue.arrayUnion([tutorClicked.docid])
+      });
+    });
+  }
+
   Future deleteHomework(String docid, String classid, String collection) async {
     return await classesCollection
         .document(classid)
@@ -64,15 +81,6 @@ class DatabaseService {
             .map((e) => ClassData.fromUserMapStream(e.data, e.documentID, uid))
             .toList());
   }
-
-  // Stream<UserData> get streamuserdata {
-  //   //get the user classes first
-  //   return _firestore
-  //       .collection("Tutors")
-  //       .document(uid)
-  //       .snapshots()
-  //       .map((event) => UserData.fromMap(event.data));
-  // }
 
   Stream<Tutor> get streamTutor {
     //get the user classes first
@@ -112,13 +120,6 @@ class DatabaseService {
           .updateData({'Homework': value.documentID});
     });
   }
-
-  // Stream<List<AllClassesData>> get allclasses {
-  //   //some test code to see if this compiles
-  //   Stream<List<AllClassesData>> something;
-
-  //   return something;
-  // }
 
   Stream<List<Tutor>> get tutors {
     return tutorsCollection.snapshots().map(_tutorsListFromSnapshot);
@@ -277,22 +278,6 @@ class DatabaseService {
     }).toList();
   }
 
-  // UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
-  //   return UserData(
-  //       firstName: snapshot.data['firstname'] ?? "",
-  //       rating: snapshot.data['rating'] ?? "",
-  //       classes: snapshot.data['classes'] ?? "");
-  // }
-
-  // Stream<UserData> get userdata {
-  //   print("some things " + uid);
-
-  //   return tutorsCollection
-  //       .document(uid)
-  //       .snapshots()
-  //       .map((DocumentSnapshot userdata) => _userDataFromSnapshot(userdata));
-  // }
-
   Stream<List<Homework>> get homeworks {
     return hworkCollection.snapshots().map((_hworkFromSnapshot));
   }
@@ -305,38 +290,3 @@ class DatabaseService {
     classesCollection.document(classid).collection("Homeworks").getDocuments();
   }
 }
-
-// void getTheClasses(ClassDataNotifier classDataNotifier) async {
-//   QuerySnapshot snapshot =
-//       await Firestore.instance.collection("Classes").getDocuments();
-
-//   List<ClassData> _classList = List<ClassData>();
-
-//   Future.forEach(snapshot.documents, (document) async {
-//     // ClassData data = ClassData.fromMap(document.data);
-//     QuerySnapshot pre = await Firestore.instance
-//         .collection("Classes")
-//         .document(document.documentID)
-//         .collection("Pre")
-//         .getDocuments();
-
-//     List<Preq> _preList = List<Preq>();
-
-//     pre.documents.forEach((preClass) {
-//       Preq preqData = Preq.fromMap(preClass.data);
-
-//       if (preClass.data != null) {
-//         _preList.add(preqData);
-//       }
-//     });
-
-//     ClassData data =
-//         ClassData.fromMap(document.data, document.documentID, _preList);
-
-//     if (data != null) {
-//       _classList.add(data);
-//     }
-//   });
-
-//   classDataNotifier.classes = _classList;
-// }

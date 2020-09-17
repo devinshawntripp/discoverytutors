@@ -1,3 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:disc_t/Screens/LoggedIn/ChatView/chat.dart';
+import 'package:disc_t/models/chatModel.dart';
+
 class Tutor {
   int totalVotes;
   int contributions;
@@ -8,6 +12,27 @@ class Tutor {
   List<String> classes;
   bool prof;
   String tutorID;
+  List<String> chatIDs;
+  List<String> chatWiths;
+
+  Stream<List<ChatModel>> _chats;
+
+  Stream<List<ChatModel>> get chats {
+    return Firestore.instance.collection("Chats").snapshots().map((event) =>
+        event.documents
+            .where((element) =>
+                (element.data['tutors'].cast<String>().contains(docid) == true))
+            .map((e) => ChatModel.fromMap(e.data, e.documentID))
+            .toList());
+  }
+
+  set chats(Stream<List<ChatModel>> s) {
+    _chats = s;
+  }
+
+  // Stream<ChatModel>() {
+  //   return Firestore.instance.collection("Chats");
+  // }
 
   Tutor.fromMap(Map<String, dynamic> data, String docid) {
     this.totalVotes = data['totalvotes'];
@@ -18,6 +43,8 @@ class Tutor {
     this.tutorID = data['tutorid'];
     try {
       this.classes = data['classes'].cast<String>();
+      this.chatIDs = data['chats'].cast<String>();
+      this.chatWiths = data['chatsWith'].cast<String>();
     } catch (error) {}
 
     this.firstName = data['firstname'];
@@ -32,5 +59,7 @@ class Tutor {
       this.rate,
       this.contributions,
       this.totalVotes,
-      this.prof});
+      this.prof,
+      this.chatIDs,
+      this.chatWiths});
 }

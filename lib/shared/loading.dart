@@ -10,7 +10,8 @@ class Loading extends StatelessWidget {
         child: SpinKitCircle(
           color: Color(0xffFCFCFC),
           size: 100,
-          duration: Duration(milliseconds: 2000),
+
+          // duration: Duration(milliseconds: 2000),
         ),
       ),
     );
