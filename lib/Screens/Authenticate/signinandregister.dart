@@ -25,12 +25,12 @@ class _SignInState extends State<SignIn> {
     return loading
         ? Loading()
         : Scaffold(
-            // appBar: AppBar(
-            //   backgroundColor: Color(0xff7211E0),
-            //   // Here we take the value from the MyHomePage object that was created by
-            //   // the App.build method, and use it to set our appbar title.
-            //   title: Text(widget.title),
-            // ),
+            appBar: AppBar(
+              backgroundColor: Color(0xff7211E0),
+              // Here we take the value from the MyHomePage object that was created by
+              // the App.build method, and use it to set our appbar title.
+              title: Text(""),
+            ),
             body: Center(
               child: Container(
                   child: Column(

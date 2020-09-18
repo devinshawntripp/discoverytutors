@@ -164,16 +164,16 @@ class _TutorClassState extends State<TutorClass> {
                                     margin: EdgeInsets.all(10),
                                     child: RaisedButton(
                                       color: Colors.blue,
-                                      onPressed: () {
+                                      onPressed: () async {
                                         //pass in the user using the app as well as the user selected here
                                         //widget.tutor and the tutor provider
                                         if (userTutor.chatWiths == null) {
-                                          DatabaseService().createChat(
+                                          await DatabaseService().createChat(
                                               widget.tutor, userTutor);
                                         } else {
                                           if (!userTutor.chatWiths
                                               .contains(widget.tutor.docid)) {
-                                            DatabaseService().createChat(
+                                            await DatabaseService().createChat(
                                                 widget.tutor, userTutor);
                                           }
                                         }

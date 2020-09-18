@@ -15,6 +15,7 @@ class ChatModel {
   Stream<List<Message>> get messages {
     final startAtTimestamp = Timestamp.fromMillisecondsSinceEpoch(
         DateTime.parse('2019-03-13 16:49:42.044').millisecondsSinceEpoch);
+
     return Firestore.instance
         .collection("Chats")
         .document(chatID)

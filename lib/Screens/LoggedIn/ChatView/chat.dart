@@ -3,6 +3,7 @@ import 'package:disc_t/models/messagesModel.dart';
 import 'package:disc_t/models/tutorModel.dart';
 import 'package:disc_t/shared/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class Chat extends StatefulWidget {
@@ -15,23 +16,68 @@ class Chat extends StatefulWidget {
   _ChatState createState() => _ChatState();
 }
 
-Size _textSize(String text, TextStyle style) {
+Size _textSize(String text, TextStyle style, double width) {
   final TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
-      maxLines: 1,
+      maxLines: null,
       textDirection: TextDirection.ltr)
-    ..layout(minWidth: 0, maxWidth: double.infinity);
+    ..layout(minWidth: 0, maxWidth: width / 2);
   return textPainter.size;
 }
 
 class _ChatState extends State<Chat> {
+  double _inputHeight = 50;
+  final TextEditingController _textEditingController = TextEditingController();
+  var _scrollController = ScrollController();
+  void scrollToBottom() {
+    final bottomOffset = _scrollController.position.maxScrollExtent;
+    _scrollController.animateTo(
+      bottomOffset,
+      duration: Duration(milliseconds: 1000),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _textEditingController.addListener(_checkInputHeight);
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _checkInputHeight() async {
+    int count = _textEditingController.text.split('\n').length;
+
+    if (count == 0 && _inputHeight == 50.0) {
+      return;
+    }
+    if (count <= 5) {
+      // use a maximum height of 6 rows
+      // height values can be adapted based on the font size
+      var newHeight = count == 0 ? 50.0 : 28.0 + (count * 18.0);
+      setState(() {
+        _inputHeight = newHeight;
+      });
+    }
+  }
+
   String content = '';
   final TextStyle textStyle = TextStyle(
     color: Colors.white,
   );
   @override
   Widget build(BuildContext context) {
+    var m = MediaQuery.of(context).size;
     Tutor userTutor = Provider.of<Tutor>(context);
+
+    var heightText = 0.0;
     return StreamProvider<List<Message>>.value(
       value: widget.chatModel.messages,
       child: Consumer<List<Message>>(
@@ -50,42 +96,84 @@ class _ChatState extends State<Chat> {
                   body: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      for (var n in messageList)
-                        Align(
-                          alignment: n.idfrom == userTutor.docid
-                              ? Alignment.centerRight
-                              : Alignment.centerLeft,
-                          child: Container(
-                            margin: EdgeInsets.fromLTRB(0, 10, 5, 5),
-
-                            // color: Colors.blue,
-                            decoration: BoxDecoration(
-                                color: n.idfrom == userTutor.docid
-                                    ? Colors.blue
-                                    : Colors.grey,
-                                borderRadius: BorderRadius.circular(20)),
-                            // width: MediaQuery.of(context).size.width / 2,
-                            width: _textSize(n.content, textStyle).width + 10,
-
-                            height: _textSize(n.content, textStyle).height + 10,
-                            child: Center(
-                              child: Text(
-                                n.content,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.white),
-                              ),
+                      messageList == null
+                          ? Loading()
+                          : Expanded(
+                              child: ListView.builder(
+                                  controller: _scrollController,
+                                  reverse: false,
+                                  itemCount: messageList.length,
+                                  itemBuilder: (context, index) {
+                                    scrollToBottom();
+                                    heightText = _textSize(
+                                                messageList[index].content,
+                                                textStyle,
+                                                m.width)
+                                            .height +
+                                        10;
+                                    return Align(
+                                      alignment: messageList[index].idfrom ==
+                                              userTutor.docid
+                                          ? Alignment.centerRight
+                                          : Alignment.centerLeft,
+                                      child: Container(
+                                        constraints: BoxConstraints(
+                                            minWidth: 100,
+                                            maxWidth: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                2),
+                                        margin:
+                                            EdgeInsets.fromLTRB(0, 10, 5, 5),
+                                        decoration: BoxDecoration(
+                                            color: messageList[index].idfrom ==
+                                                    userTutor.docid
+                                                ? Colors.blue
+                                                : Colors.grey,
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        width: _textSize(
+                                                    messageList[index].content,
+                                                    textStyle,
+                                                    m.width)
+                                                .width +
+                                            10,
+                                        height: _textSize(
+                                                    messageList[index].content,
+                                                    textStyle,
+                                                    m.width)
+                                                .height +
+                                            10,
+                                        child: Center(
+                                          child: Text(
+                                            messageList[index].content,
+                                            textAlign: TextAlign.center,
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }),
                             ),
-                            // color: Colors.blue,
-                          ),
-                        ),
                       Container(
                         color: Colors.grey,
                         child: Row(
                           children: <Widget>[
                             Expanded(
                               child: TextFormField(
-                                decoration:
-                                    InputDecoration(hintText: "Message"),
+                                controller: _textEditingController,
+                                textInputAction: TextInputAction.newline,
+                                maxLines: null,
+                                keyboardType: TextInputType.multiline,
+                                decoration: InputDecoration(
+                                  hintText: "Message",
+                                  border: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                ),
                                 onChanged: (val) {
                                   setState(() => content = val);
                                 },
@@ -96,11 +184,22 @@ class _ChatState extends State<Chat> {
                                 onTap: () {
                                   widget.chatModel.sendChat(
                                       content, userTutor.docid, "text");
+                                  setState(() {
+                                    content = '';
+                                    _textEditingController.clear();
+                                    scrollToBottom();
+                                    // var offset =
+                                    //     _scrollController.offset + heightText;
+                                    // _scrollController.jumpTo(offset);
+                                  });
                                 }),
                           ],
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height / 10),
+                      Container(
+                        height: MediaQuery.of(context).size.height / 10,
+                        color: Colors.blue,
+                      )
                     ],
                   ));
         },
