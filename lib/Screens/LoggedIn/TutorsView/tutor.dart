@@ -52,156 +52,159 @@ class _TutorClassState extends State<TutorClass> {
                     title: Text(widget.tutor.firstName),
                   ),
                   body: Center(
-                      child: Column(
-                          mainAxisSize: MainAxisSize.min,
+                      child: Column(mainAxisSize: MainAxisSize.min, children: <
+                          Widget>[
+                    SizedBox(
+                      height: 40,
+                    ),
+                    CircleAvatar(
+                      backgroundColor: Colors.blue,
+                      radius: 75,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Classes Taken",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800),
+                    ),
+                    Expanded(
+                        child: Container(
+                            height: 300,
+                            child: TutorsClassList(
+                                classes: widget.tutor.classes))),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.35,
+                      width: MediaQuery.of(context).size.width,
+                      child: Container(
+                        child: Column(
                           children: <Widget>[
-                        SizedBox(
-                          height: 40,
-                        ),
-                        CircleAvatar(
-                          backgroundColor: Colors.blue,
-                          radius: 75,
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          "Classes Taken",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800),
-                        ),
-                        Expanded(
-                            child: Container(
-                                height: 300,
-                                child: TutorsClassList(
-                                    classes: widget.tutor.classes))),
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.35,
-                          width: MediaQuery.of(context).size.width,
-                          child: Container(
-                            child: Column(
-                              children: <Widget>[
-                                // SizedBox(height: 20,),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Container(
-                                    margin: EdgeInsets.only(left: 10),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Text(
-                                          "Rating: ",
-                                          style: TextStyle(
-                                              fontSize: 30,
-                                              color: Color(0xffFCFCFC),
-                                              fontWeight: FontWeight.w800),
-                                        ),
-                                        Expanded(
-                                          child: RatingsList(
-                                            tutor: widget.tutor,
-                                          ),
-                                        ),
-                                      ],
+                            // SizedBox(height: 20,),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                margin: EdgeInsets.only(left: 10),
+                                child: Row(
+                                  children: <Widget>[
+                                    Text(
+                                      "Rating: ",
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          color: Color(0xffFCFCFC),
+                                          fontWeight: FontWeight.w800),
+                                    ),
+                                    Expanded(
+                                      child: RatingsList(
+                                        tutor: widget.tutor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            // SizedBox(
+                            //   height: 20,
+                            // ),
+                            // Text(
+                            //   "BIO: ",
+                            //   style: TextStyle(
+                            //     fontSize: 40,
+                            //     color: Color(0xffFCFCFC),
+                            //     fontWeight: FontWeight.w800
+                            //   ),
+                            // ),
+                            // SizedBox(height: 20,),
+                            Container(
+                              margin: EdgeInsets.only(top: 10),
+                              width: MediaQuery.of(context).size.width,
+                              // height: MediaQuery.of(context).size.height * 0.10,
+                              child: Container(
+                                margin: EdgeInsets.only(left: 10),
+                                child: Text(("RATE P/H: ${widget.tutor.rate}"),
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Color(0xffFCFCFC),
+                                        fontWeight: FontWeight.w800)),
+                              ),
+                              // child: Card(
+                              //   shape: RoundedRectangleBorder(
+                              //     borderRadius: BorderRadius.all(new Radius.circular(0))
+                              //   ),
+
+                              // ),
+                            ),
+                            //get each users contributions
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              margin: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                              child: Text(
+                                  "Contributions: ${widget.tutor.contributions}",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Color(0xffFCFCFC),
+                                      fontWeight: FontWeight.w800)),
+                            ),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              margin: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                              child: Text("Votes: ${widget.tutor.totalVotes}",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Color(0xffFCFCFC),
+                                      fontWeight: FontWeight.w800)),
+                            ),
+                            userTutor.docid == widget.tutor.docid
+                                ? Text("")
+                                : Container(
+                                    height: h / 14,
+                                    alignment: Alignment.center,
+                                    margin: EdgeInsets.all(10),
+                                    child: RaisedButton(
+                                      color: Colors.blue,
+                                      onPressed: () {
+                                        //pass in the user using the app as well as the user selected here
+                                        //widget.tutor and the tutor provider
+                                        if (userTutor.chatWiths == null) {
+                                          DatabaseService().createChat(
+                                              widget.tutor, userTutor);
+                                        } else {
+                                          if (!userTutor.chatWiths
+                                              .contains(widget.tutor.docid)) {
+                                            DatabaseService().createChat(
+                                                widget.tutor, userTutor);
+                                          }
+                                        }
+
+                                        if (userChats != null) {
+                                          ChatModel chat = userChats.firstWhere(
+                                              (element) => element.tutorIDS
+                                                  .contains(
+                                                      widget.tutor.docid));
+
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => Chat(
+                                                  chatID: chat.chatID,
+                                                  chatModel: chat,
+                                                ),
+                                              ));
+                                        }
+                                      },
+                                      child: Container(
+                                          alignment: Alignment.center,
+                                          width: 300,
+                                          child: Text("Chat")),
                                     ),
                                   ),
-                                ),
-                                // SizedBox(
-                                //   height: 20,
-                                // ),
-                                // Text(
-                                //   "BIO: ",
-                                //   style: TextStyle(
-                                //     fontSize: 40,
-                                //     color: Color(0xffFCFCFC),
-                                //     fontWeight: FontWeight.w800
-                                //   ),
-                                // ),
-                                // SizedBox(height: 20,),
-                                Container(
-                                  margin: EdgeInsets.only(top: 10),
-                                  width: MediaQuery.of(context).size.width,
-                                  // height: MediaQuery.of(context).size.height * 0.10,
-                                  child: Container(
-                                    margin: EdgeInsets.only(left: 10),
-                                    child: Text(
-                                        ("RATE P/H: ${widget.tutor.rate}"),
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            color: Color(0xffFCFCFC),
-                                            fontWeight: FontWeight.w800)),
-                                  ),
-                                  // child: Card(
-                                  //   shape: RoundedRectangleBorder(
-                                  //     borderRadius: BorderRadius.all(new Radius.circular(0))
-                                  //   ),
-
-                                  // ),
-                                ),
-                                //get each users contributions
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  margin: EdgeInsets.fromLTRB(10, 10, 0, 0),
-                                  child: Text(
-                                      "Contributions: ${widget.tutor.contributions}",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          color: Color(0xffFCFCFC),
-                                          fontWeight: FontWeight.w800)),
-                                ),
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  margin: EdgeInsets.fromLTRB(10, 10, 0, 0),
-                                  child: Text(
-                                      "Votes: ${widget.tutor.totalVotes}",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          color: Color(0xffFCFCFC),
-                                          fontWeight: FontWeight.w800)),
-                                ),
-                                userTutor.docid == widget.tutor.docid
-                                    ? Text("")
-                                    : Container(
-                                        height: h / 14,
-                                        alignment: Alignment.center,
-                                        margin: EdgeInsets.all(10),
-                                        child: RaisedButton(
-                                          color: Colors.blue,
-                                          onPressed: () {
-                                            //pass in the user using the app as well as the user selected here
-                                            //widget.tutor and the tutor provider
-                                            if (!userTutor.chatWiths
-                                                .contains(widget.tutor.docid)) {
-                                              DatabaseService().createChat(
-                                                  widget.tutor, userTutor);
-                                            }
-
-                                            if (userChats != null) {
-                                              ChatModel chat = userChats
-                                                  .firstWhere((element) =>
-                                                      element.tutorIDS.contains(
-                                                          widget.tutor.docid));
-
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => Chat(
-                                                      chatID: chat.chatID,
-                                                    ),
-                                                  ));
-                                            }
-                                          },
-                                          child: Container(
-                                              alignment: Alignment.center,
-                                              width: 300,
-                                              child: Text("Chat")),
-                                        ),
-                                      ),
-                              ],
-                            ),
-                          ),
-                        )
-                      ])));
+                          ],
+                        ),
+                      ),
+                    )
+                  ])));
             }));
   }
 }

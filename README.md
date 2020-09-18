@@ -1,4 +1,4 @@
-# disc_t
+# discoverytutors
 
 A new Flutter project.
 

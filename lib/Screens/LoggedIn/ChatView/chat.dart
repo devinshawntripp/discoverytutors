@@ -78,11 +78,6 @@ class _ChatState extends State<Chat> {
                             // color: Colors.blue,
                           ),
                         ),
-                      // Container(
-                      //     color: Colors.grey,
-                      //     child: TextFormField(
-                      //       decoration: InputDecoration(hintText: "Message"),
-                      //     )),
                       Container(
                         color: Colors.grey,
                         child: Row(
@@ -104,27 +99,10 @@ class _ChatState extends State<Chat> {
                                 }),
                           ],
                         ),
-                      )
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height / 10),
                     ],
-                  )
-                  // body: Column(
-                  //   mainAxisAlignment: MainAxisAlignment.end,
-                  //   children: <Widget>[
-                  //     Row(
-                  //       children: <Widget>[
-                  //         Container(
-                  //           color: Colors.grey,
-                  //           child: TextFormField(
-                  //             decoration: InputDecoration(
-                  //                 hintText: "type your message"),
-                  //           ),
-                  //         ),
-                  //         // Icon(Icons.send)
-                  //       ],
-                  //     )
-                  //   ],
-                  // ),
-                  );
+                  ));
         },
       ),
     );
