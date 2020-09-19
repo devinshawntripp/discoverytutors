@@ -29,29 +29,29 @@ class _SignInState extends State<SignIn> {
               backgroundColor: Color(0xff7211E0),
               // Here we take the value from the MyHomePage object that was created by
               // the App.build method, and use it to set our appbar title.
-              title: Text(""),
+              title: Text("DISCOVERY TUTORS"),
             ),
             body: Center(
               child: Container(
                   child: Column(
                 children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.02),
-                    child: Text(
-                      "DISCOVERY TUTORS",
-                      style: new TextStyle(
-                        color: Color(0xffFCFCFC),
-                        fontWeight: FontWeight.w800,
-                        decoration: TextDecoration.underline,
-                      ),
-                      textScaleFactor: 2.5,
-                    ),
-                  ),
+                  // Container(
+                  //   margin: EdgeInsets.only(
+                  //       top: MediaQuery.of(context).size.height * 0.02),
+                  //   child: Text(
+                  //     "DISCOVERY TUTORS",
+                  //     style: new TextStyle(
+                  //       color: Color(0xffFCFCFC),
+                  //       fontWeight: FontWeight.w800,
+                  //       decoration: TextDecoration.underline,
+                  //     ),
+                  //     textScaleFactor: 2.5,
+                  //   ),
+                  // ),
                   Container(
                     //add logo
                     margin: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.05),
+                        top: MediaQuery.of(context).size.height * 0.02),
                     child: Image.asset(
                       'assets/Unt-Logo.png',
                       height: 100,
@@ -60,7 +60,7 @@ class _SignInState extends State<SignIn> {
                   Container(
                     // margin: EdgeInsets.only(top: MediaQuery.of(context).size.height/),
                     margin: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * .05),
+                        top: MediaQuery.of(context).size.height * .02),
                     height:
                         (MediaQuery.of(context).size.height * cardHeight * 1.3),
                     width: MediaQuery.of(context).size.width * .90,
@@ -212,36 +212,36 @@ class _SignInState extends State<SignIn> {
                       ),
                     ),
                   ),
+                  // Container(
+                  //   margin: EdgeInsets.only(top: 10),
+                  //   width: MediaQuery.of(context).size.width / 1.2,
+                  //   height: 50,
+                  //   child: RaisedButton(
+                  //     onPressed: () async {
+                  //       await _auth.signInAnon();
+                  //     },
+                  //     child: Text(
+                  //       "Facebook",
+                  //       style: new TextStyle(
+                  //         color: Color(0xffFCFCFC),
+                  //         fontSize: 20,
+                  //         fontWeight: FontWeight.w700,
+                  //       ),
+                  //     ),
+                  //     color: Color(0xff256EFF),
+                  //     shape: RoundedRectangleBorder(
+                  //         borderRadius:
+                  //             BorderRadius.all(new Radius.circular(60))),
+                  //     elevation: 10,
+                  //   ),
+                  // ),
                   Container(
                     margin: EdgeInsets.only(top: 10),
                     width: MediaQuery.of(context).size.width / 1.2,
                     height: 50,
                     child: RaisedButton(
                       onPressed: () async {
-                        await _auth.signInAnon();
-                      },
-                      child: Text(
-                        "Facebook",
-                        style: new TextStyle(
-                          color: Color(0xffFCFCFC),
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      color: Color(0xff256EFF),
-                      shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(new Radius.circular(60))),
-                      elevation: 10,
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 10),
-                    width: MediaQuery.of(context).size.width / 1.2,
-                    height: 50,
-                    child: RaisedButton(
-                      onPressed: () async {
-                        await _auth.signInAnon();
+                        await _auth.signInWithGoogle();
                       },
                       child: Text(
                         "Google",
@@ -258,35 +258,35 @@ class _SignInState extends State<SignIn> {
                       elevation: 10,
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 10),
-                    width: MediaQuery.of(context).size.width / 1.2,
-                    height: 50,
-                    child: RaisedButton(
-                      onPressed: () async {
-                        dynamic result = await _auth.signInAnon();
-                        if (result == Null) {
-                          print("user not signed in");
-                        } else {
-                          print("user signed in");
-                          print(result.uid);
-                        }
-                      },
-                      child: Text(
-                        "Guest",
-                        style: new TextStyle(
-                          color: Color(0xffFCFCFC),
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      color: Color(0xff256EFF),
-                      shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(new Radius.circular(60))),
-                      elevation: 10,
-                    ),
-                  ),
+                  // Container(
+                  //   margin: EdgeInsets.only(top: 10),
+                  //   width: MediaQuery.of(context).size.width / 1.2,
+                  //   height: 50,
+                  //   child: RaisedButton(
+                  //     onPressed: () async {
+                  //       dynamic result = await _auth.signInAnon();
+                  //       if (result == Null) {
+                  //         print("user not signed in");
+                  //       } else {
+                  //         print("user signed in");
+                  //         print(result.uid);
+                  //       }
+                  //     },
+                  //     child: Text(
+                  //       "Guest",
+                  //       style: new TextStyle(
+                  //         color: Color(0xffFCFCFC),
+                  //         fontSize: 20,
+                  //         fontWeight: FontWeight.w700,
+                  //       ),
+                  //     ),
+                  //     color: Color(0xff256EFF),
+                  //     shape: RoundedRectangleBorder(
+                  //         borderRadius:
+                  //             BorderRadius.all(new Radius.circular(60))),
+                  //     elevation: 10,
+                  //   ),
+                  // ),
                 ],
               )),
             ),

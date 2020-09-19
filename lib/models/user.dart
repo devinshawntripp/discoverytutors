@@ -122,6 +122,6 @@ class ClassData {
   }
 }
 
-List<String> takenClasses = [];
+List<String> takenClasses = [''];
 
 List<String> selectedUserClasses = [];

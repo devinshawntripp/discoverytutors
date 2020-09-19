@@ -3,6 +3,7 @@ import 'package:disc_t/Screens/RegisterDecider/registerTutor.dart';
 import 'package:disc_t/Services/database.dart';
 import 'package:disc_t/models/tutorModel.dart';
 import 'package:disc_t/models/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './Authenticate/signinandregister.dart';
@@ -23,6 +24,11 @@ class Wrapper extends StatelessWidget {
         builder: (context, snapshot) {
           print(" Here is the data ${snapshot.data}");
           if (snapshot.hasData) {
+            // final FirebaseAuth _auth = FirebaseAuth.instance;
+            // _auth.signOut();
+
+            // return Text("");
+
             return Tutors();
           } else {
             return RegisterTutor();

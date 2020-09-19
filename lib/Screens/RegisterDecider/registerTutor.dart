@@ -105,6 +105,8 @@ class _RegisterTutorState extends State<RegisterTutor> {
                         onPressed: () async {
                           if (_formkey.currentState.validate()) {
                             setState(() => loading = true);
+                            if (takenClasses == null) {
+                            } else {}
                             await _database.registerTutor(
                                 user, firstname, takenClasses, _rate);
                             takenClasses = [];

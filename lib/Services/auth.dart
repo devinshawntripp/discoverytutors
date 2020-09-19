@@ -1,8 +1,10 @@
 import 'package:disc_t/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
 
   //create user obj based on firebase user
   User _userFromFirebaseUser(FirebaseUser user) {
@@ -42,6 +44,42 @@ class AuthService {
       print(e.toString());
       return null;
     }
+  }
+
+  Future signInWithGoogle() async {
+    // await Firebase.initializeApp();
+
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
+    );
+
+    final FirebaseUser firebaseUser =
+        (await FirebaseAuth.instance.signInWithCredential(credential)).user;
+
+    if (firebaseUser != null) {
+      // assert(!user.isAnonymous);
+      // assert(await user.getIdToken() != null);
+
+      // final User currentUser = _auth.currentUser;
+      // assert(user.uid == currentUser.uid);
+      print('signInWithGoogle succeeded: $user');
+      return _userFromFirebaseUser(firebaseUser);
+
+      // return '$user';
+    }
+
+    return null;
+  }
+
+  Future<void> signOutGoogle() async {
+    await googleSignIn.signOut();
+
+    print("User Signed Out");
   }
 
   //register with email and password

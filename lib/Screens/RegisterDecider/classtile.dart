@@ -46,13 +46,13 @@ class _ClassTileState extends State<ClassTile> {
                         addclass(widget.classPassed.classid);
                       });
 
-                      for (var some in takenClasses) {
-                        print("some class added" + some);
-                      }
+                      // for (var some in takenClasses) {
+                      //   print("some class added" + some);
+                      // }
 
-                      print(selectedColor);
+                      // print(selectedColor);
 
-                      print(widget.classPassed.classid + " Tapped");
+                      // print(widget.classPassed.classid + " Tapped");
                     }),
                     contentPadding: EdgeInsets.only(left: 5),
                     leading: Icon(Icons.assignment),
