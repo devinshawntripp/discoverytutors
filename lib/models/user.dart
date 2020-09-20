@@ -1,16 +1,14 @@
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 import 'classMaterialModel.dart';
 
-class User {
+class UserTutor {
   final String uid;
   final String email;
 
-  User({this.uid, this.email});
+  UserTutor({this.uid, this.email});
 }
 
 class Preq {
@@ -52,35 +50,33 @@ class ClassData {
 
   Stream<List<Homework>> get homework {
     // final Firestore _firestore = Firestore.instance;
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("Classes")
-        .document(classid)
+        .doc(classid)
         .collection("Homework")
         .snapshots()
         .map((event) =>
-            event.documents.map((e) => Homework.fromMap(e.data)).toList());
+            event.docs.map((e) => Homework.fromMap(e.data())).toList());
   }
 
   Stream<List<Note>> get notes {
     // final Firestore _firestore = Firestore.instance;
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("Classes")
-        .document(classid)
+        .doc(classid)
         .collection("Notes")
         .snapshots()
-        .map((event) =>
-            event.documents.map((e) => Note.fromMap(e.data)).toList());
+        .map((event) => event.docs.map((e) => Note.fromMap(e.data())).toList());
   }
 
   Stream<List<Test>> get tests {
     // final Firestore _firestore = Firestore.instance;
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("Classes")
-        .document(classid)
+        .doc(classid)
         .collection("Tests")
         .snapshots()
-        .map((event) =>
-            event.documents.map((e) => Test.fromMap(e.data)).toList());
+        .map((event) => event.docs.map((e) => Test.fromMap(e.data())).toList());
   }
 
   ClassData({
@@ -95,14 +91,16 @@ class ClassData {
     classname = data['Title'] ?? "";
     classdescription = data['Description'] ?? "";
     documentID = docID;
-    classid = data['classid'];
+    classid = data['classid'] ?? "";
 
-    List<String> tutorIds = data['tutors'].cast<String>();
-    if (tutorIds.contains(uid)) {
-      picked = true;
-    } else {
-      picked = false;
-    }
+    try {
+      List<String> tutorIds = data['tutors'].cast<String>();
+      if (tutorIds.contains(uid)) {
+        picked = true;
+      } else {
+        picked = false;
+      }
+    } catch (e) {}
   }
 
   ClassData.fromUserMap(Map<String, dynamic> data, String docID) {
@@ -122,6 +120,6 @@ class ClassData {
   }
 }
 
-List<String> takenClasses = [''];
+List<String> takenClasses = [];
 
 List<String> selectedUserClasses = [];

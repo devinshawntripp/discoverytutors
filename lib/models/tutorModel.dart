@@ -3,7 +3,7 @@ import 'package:disc_t/Screens/LoggedIn/ChatView/chat.dart';
 import 'package:disc_t/models/chatModel.dart';
 
 class Tutor {
-  int totalVotes;
+  int totalVotes = 0;
   int contributions;
   String firstName;
   int rating;
@@ -20,9 +20,12 @@ class Tutor {
   Stream<List<ChatModel>> get chats {
     return Firestore.instance.collection("Chats").snapshots().map((event) =>
         event.documents
-            .where((element) =>
-                (element.data['tutors'].cast<String>().contains(docid) == true))
-            .map((e) => ChatModel.fromMap(e.data, e.documentID))
+            .where((element) => (element
+                    .data()['tutors']
+                    .cast<String>()
+                    .contains(docid) ==
+                true))
+            .map((e) => ChatModel.fromMap(e.data(), e.id))
             .toList());
   }
 
@@ -35,31 +38,32 @@ class Tutor {
   // }
 
   Tutor.fromMap(Map<String, dynamic> data, String docid) {
-    this.totalVotes = data['totalvotes'];
     this.docid = docid;
-    this.rating = data['rating'];
-    this.rate = data['rate'];
-    this.prof = data['prof'] ?? false;
-    this.tutorID = data['tutorid'];
+
     try {
+      this.firstName = data['firstname'];
+      this.contributions = data['Contributions'];
+      this.tutorID = data['tutorid'];
+      this.prof = data['prof'] ?? false;
+      this.rate = data['rate'];
+      this.rating = data['rating'];
+      this.totalVotes = data['totalvotes'];
       this.classes = data['classes'].cast<String>();
       this.chatIDs = data['chats'].cast<String>();
       this.chatWiths = data['chatsWith'].cast<String>();
     } catch (error) {}
-
-    this.firstName = data['firstname'];
-    this.contributions = data['Contributions'];
   }
 
-  Tutor(
-      {this.firstName,
-      this.rating,
-      this.docid,
-      this.classes,
-      this.rate,
-      this.contributions,
-      this.totalVotes,
-      this.prof,
-      this.chatIDs,
-      this.chatWiths});
+  Tutor({
+    this.firstName,
+    this.rating,
+    this.docid,
+    this.classes,
+    this.rate,
+    this.contributions,
+    this.totalVotes,
+    this.prof,
+    this.chatIDs,
+    this.chatWiths,
+  });
 }

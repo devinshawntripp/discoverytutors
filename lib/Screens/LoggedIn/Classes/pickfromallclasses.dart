@@ -9,7 +9,8 @@ import 'package:provider/provider.dart';
 
 class PickFromAllClasses extends StatefulWidget {
   // final Function refresh;
-  PickFromAllClasses({Key key}) : super(key: key);
+  List<ClassData> classl;
+  PickFromAllClasses({Key key, this.classl}) : super(key: key);
 
   @override
   _PickFromAllClassesState createState() => _PickFromAllClassesState();
@@ -46,19 +47,19 @@ class _PickFromAllClassesState extends State<PickFromAllClasses> {
   Widget build(BuildContext context) {
     // final data = context.watch<ClassDataNotifier>();
     // final userdata = context.watch<UserDataNotifier>();
-    final user = Provider.of<User>(context);
+    final user = Provider.of<UserTutor>(context);
     DatabaseService dbs;
     if (user != null) {
       dbs = DatabaseService(uid: user.uid);
     }
 
-    List<ClassData> classl = Provider.of<List<ClassData>>(context);
+    // List<ClassData> classl = Provider.of<List<ClassData>>(context);
     List<ClassData> userClasses =
-        classl.where((classdata) => classdata.picked == true).toList();
+        widget.classl.where((classdata) => classdata.picked == true).toList();
 
     return user == null
         ? Loading()
-        : classl == null
+        : widget.classl == null
             ? Loading()
             : userClasses == null
                 ? Loading()
@@ -90,7 +91,7 @@ class _PickFromAllClassesState extends State<PickFromAllClasses> {
 
                             List<String> classesPassed = List<String>();
                             List<String> classesNotPassed = List<String>();
-                            for (ClassData n in classl) {
+                            for (ClassData n in widget.classl) {
                               if (n.picked == true) {
                                 print(n.classid);
                                 classesPassed.add(n.classid);
@@ -108,11 +109,11 @@ class _PickFromAllClassesState extends State<PickFromAllClasses> {
                       ),
                       Expanded(
                         child: Container(
-                          child: classl == null
+                          child: widget.classl == null
                               ? Loading()
                               : ListView.builder(
                                   shrinkWrap: true,
-                                  itemCount: classl.length,
+                                  itemCount: widget.classl.length,
                                   scrollDirection: Axis.vertical,
                                   itemBuilder: (context, index) {
                                     return Container(
@@ -122,15 +123,17 @@ class _PickFromAllClassesState extends State<PickFromAllClasses> {
                                         child: CheckboxListTile(
                                           controlAffinity:
                                               ListTileControlAffinity.leading,
-                                          value: classl[index].picked,
+                                          value: widget.classl[index].picked,
                                           onChanged: (value) {
                                             setState(() {
-                                              classl[index].picked =
-                                                  !classl[index].picked;
+                                              widget.classl[index].picked =
+                                                  !widget.classl[index].picked;
                                             });
                                           },
-                                          title: Text(classl[index].classname),
-                                          subtitle: Text(classl[index].classid),
+                                          title: Text(
+                                              widget.classl[index].classname),
+                                          subtitle: Text(
+                                              widget.classl[index].classid),
                                         ),
                                       ),
                                     );

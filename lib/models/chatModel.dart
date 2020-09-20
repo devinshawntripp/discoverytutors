@@ -25,7 +25,7 @@ class ChatModel {
         .limit(100)
         .snapshots()
         .map((event) =>
-            event.documents.map((e) => Message.fromMap(e.data)).toList());
+            event.documents.map((e) => Message.fromMap(e.data())).toList());
   }
 
   Future<void> sendChat(String content, String idFrom, String type) async {

@@ -9,8 +9,10 @@ import 'package:provider/provider.dart';
 class Chat extends StatefulWidget {
   String chatID;
   ChatModel chatModel;
+  Tutor userTutor;
 
-  Chat({Key key, this.chatID, this.chatModel}) : super(key: key);
+  Chat({Key key, this.chatID, this.chatModel, this.userTutor})
+      : super(key: key);
 
   @override
   _ChatState createState() => _ChatState();
@@ -75,135 +77,131 @@ class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
     var m = MediaQuery.of(context).size;
-    Tutor userTutor = Provider.of<Tutor>(context);
+    // Tutor userTutor = Provider.of<Tutor>(context);
+    List<Message> messageList = Provider.of<List<Message>>(context);
 
     var heightText = 0.0;
-    return StreamProvider<List<Message>>.value(
-      value: widget.chatModel.messages,
-      child: Consumer<List<Message>>(
-        builder: (context, messageList, child) {
-          return messageList == null
-              ? Loading()
-              : Scaffold(
-                  backgroundColor: Color(0xff3DDC97),
-                  appBar: AppBar(
-                    backgroundColor: Color(0xff7211E0),
-                    // Here we take the value from the MyHomePage object that was created by
-                    // the App.build method, and use it to set our appbar title.
-                    //create messaging for tutors
-                    title: Text(widget.chatID),
-                  ),
-                  body: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      messageList == null
-                          ? Loading()
-                          : Expanded(
-                              child: ListView.builder(
-                                  controller: _scrollController,
-                                  reverse: false,
-                                  itemCount: messageList.length,
-                                  itemBuilder: (context, index) {
-                                    scrollToBottom();
-                                    heightText = _textSize(
+
+    return messageList == null
+        ? Loading()
+        : Scaffold(
+            backgroundColor: Color(0xff3DDC97),
+            appBar: AppBar(
+              backgroundColor: Color(0xff7211E0),
+              // Here we take the value from the MyHomePage object that was created by
+              // the App.build method, and use it to set our appbar title.
+              //create messaging for tutors
+              title: Text(widget.chatID),
+            ),
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                messageList.length == 0
+                    ? Text("")
+                    : Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+                          },
+                          child: ListView.builder(
+                              controller: _scrollController,
+                              itemCount: messageList.length,
+                              itemBuilder: (context, index) {
+                                // scrollToBottom();
+                                heightText = _textSize(
+                                            messageList[index].content,
+                                            textStyle,
+                                            m.width)
+                                        .height +
+                                    10;
+                                return Align(
+                                  alignment: messageList[index].idfrom ==
+                                          widget.userTutor.docid
+                                      ? Alignment.centerRight
+                                      : Alignment.centerLeft,
+                                  child: Container(
+                                    constraints: BoxConstraints(
+                                        minWidth: 100,
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width /
+                                                2),
+                                    margin: EdgeInsets.fromLTRB(0, 10, 5, 5),
+                                    decoration: BoxDecoration(
+                                        color: messageList[index].idfrom ==
+                                                widget.userTutor.docid
+                                            ? Colors.blue
+                                            : Colors.grey,
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    width: _textSize(messageList[index].content,
+                                                textStyle, m.width)
+                                            .width +
+                                        10,
+                                    height: _textSize(
                                                 messageList[index].content,
                                                 textStyle,
                                                 m.width)
                                             .height +
-                                        10;
-                                    return Align(
-                                      alignment: messageList[index].idfrom ==
-                                              userTutor.docid
-                                          ? Alignment.centerRight
-                                          : Alignment.centerLeft,
-                                      child: Container(
-                                        constraints: BoxConstraints(
-                                            minWidth: 100,
-                                            maxWidth: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                2),
-                                        margin:
-                                            EdgeInsets.fromLTRB(0, 10, 5, 5),
-                                        decoration: BoxDecoration(
-                                            color: messageList[index].idfrom ==
-                                                    userTutor.docid
-                                                ? Colors.blue
-                                                : Colors.grey,
-                                            borderRadius:
-                                                BorderRadius.circular(15)),
-                                        width: _textSize(
-                                                    messageList[index].content,
-                                                    textStyle,
-                                                    m.width)
-                                                .width +
-                                            10,
-                                        height: _textSize(
-                                                    messageList[index].content,
-                                                    textStyle,
-                                                    m.width)
-                                                .height +
-                                            10,
-                                        child: Center(
-                                          child: Text(
-                                            messageList[index].content,
-                                            textAlign: TextAlign.center,
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
+                                        10,
+                                    child: Center(
+                                      child: Text(
+                                        messageList[index].content,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(color: Colors.white),
                                       ),
-                                    );
-                                  }),
-                            ),
-                      Container(
-                        color: Colors.grey,
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: TextFormField(
-                                controller: _textEditingController,
-                                textInputAction: TextInputAction.newline,
-                                maxLines: null,
-                                keyboardType: TextInputType.multiline,
-                                decoration: InputDecoration(
-                                  hintText: "Message",
-                                  border: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  enabledBorder: InputBorder.none,
-                                  errorBorder: InputBorder.none,
-                                  disabledBorder: InputBorder.none,
-                                ),
-                                onChanged: (val) {
-                                  setState(() => content = val);
-                                },
-                              ),
-                            ),
-                            GestureDetector(
-                                child: Icon(Icons.send),
-                                onTap: () {
-                                  widget.chatModel.sendChat(
-                                      content, userTutor.docid, "text");
-                                  setState(() {
-                                    content = '';
-                                    _textEditingController.clear();
-                                    scrollToBottom();
-                                    // var offset =
-                                    //     _scrollController.offset + heightText;
-                                    // _scrollController.jumpTo(offset);
-                                  });
-                                }),
-                          ],
+                                    ),
+                                  ),
+                                );
+                              }),
                         ),
                       ),
-                      Container(
-                        height: MediaQuery.of(context).size.height / 10,
-                        color: Colors.blue,
-                      )
+                Container(
+                  color: Colors.grey,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: TextFormField(
+                          controller: _textEditingController,
+                          textInputAction: TextInputAction.newline,
+                          maxLines: null,
+                          keyboardType: TextInputType.multiline,
+                          decoration: InputDecoration(
+                            hintText: "Message",
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                          ),
+                          onChanged: (val) {
+                            setState(() => content = val);
+                          },
+                        ),
+                      ),
+                      GestureDetector(
+                          child: Icon(Icons.send),
+                          onTap: () {
+                            scrollToBottom();
+                            scrollToBottom();
+                            widget.chatModel.sendChat(
+                                content, widget.userTutor.docid, "text");
+                            setState(() {
+                              content = '';
+                              _textEditingController.clear();
+                              scrollToBottom();
+                              // var offset =
+                              //     _scrollController.offset + heightText;
+                              // _scrollController.jumpTo(offset);
+                            });
+                          }),
                     ],
-                  ));
-        },
-      ),
-    );
+                  ),
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height / 10,
+                  color: Colors.blue,
+                )
+              ],
+            ));
   }
 }

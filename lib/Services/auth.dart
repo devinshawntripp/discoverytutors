@@ -7,14 +7,13 @@ class AuthService {
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   //create user obj based on firebase user
-  User _userFromFirebaseUser(FirebaseUser user) {
-    return user != null ? User(uid: user.uid, email: user.email) : null;
+  UserTutor _userFromFirebaseUser(User user) {
+    return user != null ? UserTutor(uid: user.uid, email: user.email) : null;
   }
 
   //auth change user stream
-  Stream<User> get user {
-    return _auth.onAuthStateChanged
-        .map((FirebaseUser user) => _userFromFirebaseUser(user));
+  Stream<UserTutor> get user {
+    return _auth.authStateChanges().map((user) => _userFromFirebaseUser(user));
   }
 
   //register with facebook
@@ -24,8 +23,8 @@ class AuthService {
   //anon sign in
   Future signInAnon() async {
     try {
-      AuthResult result = await _auth.signInAnonymously();
-      FirebaseUser user = result.user;
+      UserCredential result = await _auth.signInAnonymously();
+      User user = result.user;
       return _userFromFirebaseUser(user);
     } catch (e) {
       print(e.toString());
@@ -36,9 +35,9 @@ class AuthService {
   //sign in with email and password
   Future signInEAP(email, password) async {
     try {
-      AuthResult result = await _auth.signInWithEmailAndPassword(
+      UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      FirebaseUser user = result.user;
+      User user = result.user;
       return _userFromFirebaseUser(user);
     } catch (e) {
       print(e.toString());
@@ -53,12 +52,12 @@ class AuthService {
     final GoogleSignInAuthentication googleSignInAuthentication =
         await googleSignInAccount.authentication;
 
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
+    final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleSignInAuthentication.accessToken,
       idToken: googleSignInAuthentication.idToken,
     );
 
-    final FirebaseUser firebaseUser =
+    final User firebaseUser =
         (await FirebaseAuth.instance.signInWithCredential(credential)).user;
 
     if (firebaseUser != null) {
@@ -85,9 +84,9 @@ class AuthService {
   //register with email and password
   Future signUp(email, password) async {
     try {
-      AuthResult result = await _auth.createUserWithEmailAndPassword(
+      UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      FirebaseUser user = result.user;
+      User user = result.user;
       return user;
     } catch (e) {
       print(e.toString());

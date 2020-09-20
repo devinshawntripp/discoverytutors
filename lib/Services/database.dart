@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:disc_t/Services/auth.dart';
-import 'package:disc_t/models/chatModel.dart';
 import 'package:disc_t/models/classMaterialModel.dart';
 import 'package:disc_t/models/tutorModel.dart';
 import 'package:disc_t/models/user.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class DatabaseService {
   final String uid;
@@ -13,22 +9,22 @@ class DatabaseService {
   //constructor
   DatabaseService({this.uid});
 
-  final tutorsCollection = Firestore.instance.collection("Tutors");
-  final classesCollection = Firestore.instance.collection("Classes");
-  final homeworkCollection = Firestore.instance.collection("Classes");
-  final hworkCollection = Firestore.instance.collection("Homework");
-  final Firestore _firestore = Firestore.instance;
+  final tutorsCollection = FirebaseFirestore.instance.collection("Tutors");
+  final classesCollection = FirebaseFirestore.instance.collection("Classes");
+  final homeworkCollection = FirebaseFirestore.instance.collection("Classes");
+  final hworkCollection = FirebaseFirestore.instance.collection("Homework");
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  final allClassesCollection =
-      Firestore.instance.collection("Tutors/allclasses");
+  // final allClassesCollection =
+  //     FirebaseFirestore.instance.collection("Tutors/allclasses");
 
-  Future getUserName(User user) async {
-    await tutorsCollection.document(user.uid).get();
+  Future getUserName(UserTutor user) async {
+    await tutorsCollection.doc(user.uid).get();
   }
 
   Future registerTutor(
-      User user, String firstname, List<String> classes, int rate) async {
-    return await tutorsCollection.document(user.uid).setData({
+      UserTutor user, String firstname, List<String> classes, int rate) async {
+    return await tutorsCollection.doc(user.uid).set({
       'firstname': firstname,
       'rating': 0,
       'classes': FieldValue.arrayUnion(classes),
@@ -41,18 +37,18 @@ class DatabaseService {
   }
 
   Future createChat(Tutor tutorClicked, Tutor userTutor) async {
-    return await Firestore.instance.collection("Chats").add({
+    return await FirebaseFirestore.instance.collection("Chats").add({
       'tutors': FieldValue.arrayUnion([tutorClicked.docid, userTutor.docid]),
       'tutorNames':
           FieldValue.arrayUnion([tutorClicked.firstName, userTutor.firstName]),
       'timestamp': FieldValue.serverTimestamp()
     }).then((value) {
-      tutorsCollection.document(tutorClicked.docid).updateData({
-        'chats': FieldValue.arrayUnion([value.documentID]),
+      tutorsCollection.doc(tutorClicked.docid).update({
+        'chats': FieldValue.arrayUnion([value.id]),
         'chatsWith': FieldValue.arrayUnion([userTutor.docid])
       });
-      tutorsCollection.document(userTutor.docid).updateData({
-        'chats': FieldValue.arrayUnion([value.documentID]),
+      tutorsCollection.doc(userTutor.docid).update({
+        'chats': FieldValue.arrayUnion([value.id]),
         'chatsWith': FieldValue.arrayUnion([tutorClicked.docid])
       });
     });
@@ -60,9 +56,9 @@ class DatabaseService {
 
   Future deleteHomework(String docid, String classid, String collection) async {
     return await classesCollection
-        .document(classid)
+        .doc(classid)
         .collection(collection)
-        .document(docid)
+        .doc(docid)
         .delete();
   }
 
@@ -79,22 +75,23 @@ class DatabaseService {
 
   Stream<List<ClassData>> get classdata {
     return _firestore.collection("Classes").snapshots().map(
-        (QuerySnapshot snapshot) => snapshot.documents
-            .map((e) => ClassData.fromUserMapStream(e.data, e.documentID, uid))
+        (QuerySnapshot snapshot) => snapshot.docs
+            .map((e) => ClassData.fromUserMapStream(e.data(), e.id, uid))
             .toList());
   }
 
   Stream<Tutor> get streamTutor {
     //get the user classes first
+
     return _firestore
         .collection("Tutors")
-        .document(uid)
+        .doc(uid)
         .snapshots()
-        .map((event) => Tutor.fromMap(event.data, event.documentID));
+        .map((event) => Tutor.fromMap(event.data(), event.id));
   }
 
   Future createHomework(
-      User user,
+      UserTutor user,
       String filename,
       String docid,
       int upvotes,
@@ -104,10 +101,7 @@ class DatabaseService {
       String classid,
       String collection,
       String userid) async {
-    return await classesCollection
-        .document(classid)
-        .collection(collection)
-        .add({
+    return await classesCollection.doc(classid).collection(collection).add({
       "Image": imageLocation,
       "filename": filename,
       "docid": "",
@@ -116,10 +110,8 @@ class DatabaseService {
       "downvotes": downvotes,
       "rank": 0 //will calculate later
     }).then((value) {
-      value.updateData({'docid': value.documentID});
-      tutorsCollection
-          .document(userid)
-          .updateData({'Homework': value.documentID});
+      value.update({'docid': value.id});
+      tutorsCollection.doc(userid).update({'Homework': value.id});
     });
   }
 
@@ -130,61 +122,61 @@ class DatabaseService {
   void sumContributions(Tutor tutor) async {
     int totalContributions = 0;
     QuerySnapshot snapshot =
-        await Firestore.instance.collection("Classes").getDocuments();
+        await FirebaseFirestore.instance.collection("Classes").get();
 
-    await Future.forEach(snapshot.documents, (document) async {
+    await Future.forEach(snapshot.docs, (document) async {
       // ClassData data = ClassData.fromMap(document.data);
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection("Classes")
-          .document(document.documentID)
+          .doc(document.documentID)
           .collection("Homework")
-          .getDocuments()
+          .get()
           .then((value) {
-        value.documents.forEach((element) {
-          if (element.data['uid'] == tutor.docid) {
+        value.docs.forEach((element) {
+          if (element.data()['uid'] == tutor.docid) {
             totalContributions++;
           }
         });
       });
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection("Classes")
-          .document(document.documentID)
+          .doc(document.documentID)
           .collection("Notes")
-          .getDocuments()
+          .get()
           .then((value) {
         value.documents.forEach((element) {
-          if (element.data['uid'] == tutor.docid) {
+          if (element.data()['uid'] == tutor.docid) {
             totalContributions++;
           }
         });
       });
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection("Classes")
-          .document(document.documentID)
+          .doc(document.documentID)
           .collection("Tests")
-          .getDocuments()
+          .get()
           .then((value) {
-        value.documents.forEach((element) {
-          if (element.data['uid'] == tutor.docid) {
+        value.docs.forEach((element) {
+          if (element.data()['uid'] == tutor.docid) {
             totalContributions++;
           }
         });
       });
 
-      Firestore.instance
+      FirebaseFirestore.instance
           .collection("Tutors")
-          .document(tutor.docid)
-          .updateData({"Contributions": totalContributions});
+          .doc(tutor.docid)
+          .update({"Contributions": totalContributions});
     });
   }
 
   Future<void> addClassesToUser(
       List<String> classesPassed, String uid, List<ClassData> classes) async {
     for (String c in classesPassed) {
-      await Firestore.instance.collection("Tutors").document(uid).updateData({
+      await FirebaseFirestore.instance.collection("Tutors").doc(uid).update({
         "classes": FieldValue.arrayUnion([c])
       });
-      await Firestore.instance.collection("Classes").document(c).updateData({
+      await FirebaseFirestore.instance.collection("Classes").doc(c).update({
         "tutors": FieldValue.arrayUnion([uid]) ?? [uid]
       });
     }
@@ -194,10 +186,10 @@ class DatabaseService {
       List<String> classNotPassed, String uid, List<ClassData> classes) async {
     for (String c in classNotPassed) {
       //search for first class
-      await Firestore.instance.collection("Tutors").document(uid).updateData({
+      await FirebaseFirestore.instance.collection("Tutors").doc(uid).update({
         "classes": FieldValue.arrayRemove([c])
       });
-      await Firestore.instance.collection("Classes").document(c).updateData({
+      await FirebaseFirestore.instance.collection("Classes").doc(c).update({
         "tutors": FieldValue.arrayRemove([uid]) ?? [uid]
       });
     }
@@ -206,75 +198,78 @@ class DatabaseService {
   void sumVotes(Tutor tutor) async {
     int totalVotes = 0;
     QuerySnapshot snapshot =
-        await Firestore.instance.collection("Classes").getDocuments();
+        await FirebaseFirestore.instance.collection("Classes").get();
 
-    await Future.forEach(snapshot.documents, (document) async {
+    await Future.forEach(snapshot.docs, (document) async {
       // ClassData data = ClassData.fromMap(document.data);
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection("Classes")
-          .document(document.documentID)
+          .doc(document.documentID)
           .collection("Homework")
-          .getDocuments()
+          .get()
           .then((value) {
-        value.documents.forEach((element) {
-          if (element.data['uid'] == tutor.docid) {
-            totalVotes += element.data['upvotes'] - element.data['downvotes'];
+        value.docs.forEach((element) {
+          if (element.data()['uid'] == tutor.docid) {
+            totalVotes +=
+                element.data()['upvotes'] - element.data()['downvotes'];
           }
         });
       });
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection("Classes")
-          .document(document.documentID)
+          .doc(document.documentID)
           .collection("Notes")
-          .getDocuments()
+          .get()
           .then((value) {
-        value.documents.forEach((element) {
-          if (element.data['uid'] == tutor.docid) {
-            totalVotes += element.data['upvotes'] - element.data['downvotes'];
+        value.docs.forEach((element) {
+          if (element.data()['uid'] == tutor.docid) {
+            totalVotes +=
+                element.data()['upvotes'] - element.data()['downvotes'];
           }
         });
       });
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection("Classes")
-          .document(document.documentID)
+          .doc(document.documentID)
           .collection("Tests")
-          .getDocuments()
+          .get()
           .then((value) {
-        value.documents.forEach((element) {
-          if (element.data['uid'] == tutor.docid) {
-            totalVotes += element.data['upvotes'] - element.data['downvotes'];
+        value.docs.forEach((element) {
+          if (element.data()['uid'] == tutor.docid) {
+            totalVotes +=
+                element.data()['upvotes'] - element.data()['downvotes'];
           }
         });
       });
 
-      Firestore.instance
+      FirebaseFirestore.instance
           .collection("Tutors")
-          .document(tutor.docid)
-          .updateData({"Contributions": totalVotes});
+          .doc(tutor.docid)
+          .update({"Contributions": totalVotes});
     });
   }
 
   List<Tutor> _tutorsListFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.documents.map((doc) {
-      if (doc.data['classes'] != null) {
+    return snapshot.docs.map((doc) {
+      if (doc.data()['classes'] != null) {
         return Tutor(
-          contributions: doc.data['Contributions'] ?? 0,
-          firstName: doc.data['firstname'] ?? '',
-          rating: doc.data['rating'] ?? 0,
-          docid: doc.documentID,
-          classes: doc.data['classes'].cast<String>() ?? [],
-          rate: doc.data['rate'] ?? 0,
-          totalVotes: doc.data['totalvotes'] ?? 0,
+          contributions: doc.data()['Contributions'] ?? 0,
+          firstName: doc.data()['firstname'] ?? '',
+          rating: doc.data()['rating'] ?? 0,
+          docid: doc.id,
+          classes: doc.data()['classes'].cast<String>() ?? [],
+          rate: doc.data()['rate'] ?? 0,
+          totalVotes: doc.data()['totalvotes'] ?? 0,
         );
       } else {
         return Tutor(
-          contributions: doc.data['Contributions'] ?? 0,
-          firstName: doc.data['firstname'] ?? '',
-          rating: doc.data['rating'] ?? 0,
-          docid: doc.documentID,
+          contributions: doc.data()['Contributions'] ?? 0,
+          firstName: doc.data()['firstname'] ?? '',
+          rating: doc.data()['rating'] ?? 0,
+          docid: doc.id,
           classes: [],
-          rate: doc.data['rate'] ?? 0,
-          totalVotes: doc.data['totalvotes'] ?? 0,
+          rate: doc.data()['rate'] ?? 0,
+          totalVotes: doc.data()['totalvotes'] ?? 0,
         );
       }
     }).toList();
@@ -285,10 +280,10 @@ class DatabaseService {
   }
 
   List<Homework> _hworkFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.documents.map((doc) {}).toList();
+    return snapshot.docs.map((doc) {}).toList();
   }
 
   ClassData getClass(String classid) {
-    classesCollection.document(classid).collection("Homeworks").getDocuments();
+    classesCollection.doc(classid).collection("Homeworks").get();
   }
 }

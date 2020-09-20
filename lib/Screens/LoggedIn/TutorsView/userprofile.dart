@@ -1,13 +1,11 @@
 import 'package:disc_t/Screens/LoggedIn/TutorsView/tutorsclasslist.dart';
 import 'package:disc_t/Screens/LoggedIn/ratinglist.dart';
 import 'package:disc_t/models/tutorModel.dart';
-import 'package:disc_t/models/user.dart';
-import 'package:disc_t/shared/loading.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class EditProfile extends StatefulWidget {
-  EditProfile({Key key}) : super(key: key);
+  Tutor tutor;
+  EditProfile({Key key, this.tutor}) : super(key: key);
 
   @override
   _EditProfileState createState() => _EditProfileState();
@@ -31,8 +29,8 @@ class _EditProfileState extends State<EditProfile> {
   Widget build(BuildContext context) {
     // print(tutor.classes);
     // String tutorRate;
-    final tutor = Provider.of<Tutor>(context);
-    return tutor == null
+    // final tutor = Provider.of<Tutor>(context);
+    return widget.tutor == null
         ? CircularProgressIndicator()
         : Scaffold(
             backgroundColor: Color(0xff3DDC97),
@@ -41,7 +39,7 @@ class _EditProfileState extends State<EditProfile> {
               // Here we take the value from the MyHomePage object that was created by
               // the App.build method, and use it to set our appbar title.
               //create messaging for tutors
-              title: Text(tutor.firstName),
+              title: Text(widget.tutor.firstName),
             ),
             body: Center(
                 child:
@@ -66,7 +64,7 @@ class _EditProfileState extends State<EditProfile> {
               Expanded(
                   child: Container(
                       height: 300,
-                      child: TutorsClassList(classes: tutor.classes))),
+                      child: TutorsClassList(classes: widget.tutor.classes))),
               Container(
                 height: MediaQuery.of(context).size.height * 0.35,
                 width: MediaQuery.of(context).size.width,
@@ -89,7 +87,7 @@ class _EditProfileState extends State<EditProfile> {
                               ),
                               Expanded(
                                 child: RatingsList(
-                                  tutor: tutor,
+                                  tutor: widget.tutor,
                                 ),
                               ),
                             ],
@@ -103,7 +101,7 @@ class _EditProfileState extends State<EditProfile> {
                         // height: MediaQuery.of(context).size.height * 0.10,
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
-                          child: Text(("RATE P/H: ${tutor.rate}"),
+                          child: Text(("RATE P/H: ${widget.tutor.rate}"),
                               style: TextStyle(
                                   fontSize: 20,
                                   color: Color(0xffFCFCFC),
@@ -114,7 +112,8 @@ class _EditProfileState extends State<EditProfile> {
                       Container(
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.fromLTRB(10, 10, 0, 0),
-                        child: Text("Contributions: ${tutor.contributions}",
+                        child: Text(
+                            "Contributions: ${widget.tutor.contributions}",
                             style: TextStyle(
                                 fontSize: 20,
                                 color: Color(0xffFCFCFC),
@@ -123,7 +122,7 @@ class _EditProfileState extends State<EditProfile> {
                       Container(
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.fromLTRB(10, 10, 0, 0),
-                        child: Text("Votes: ${tutor.totalVotes}",
+                        child: Text("Votes: ${widget.tutor.totalVotes}",
                             style: TextStyle(
                                 fontSize: 20,
                                 color: Color(0xffFCFCFC),

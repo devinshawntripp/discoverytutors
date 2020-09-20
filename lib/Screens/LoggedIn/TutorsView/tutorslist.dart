@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class TutorsList extends StatefulWidget {
+  final Tutor userTutor;
+  TutorsList({Key key, this.userTutor}) : super(key: key);
+
   @override
   _TutorsListState createState() => _TutorsListState();
 }
@@ -17,11 +20,20 @@ class _TutorsListState extends State<TutorsList> {
 
     return tutors == null
         ? Loading()
-        : ListView.builder(
-            itemCount: tutors.length,
-            itemBuilder: (context, index) {
-              return TutorTile(tutor: tutors[index]);
-            },
+        : GridView.count(
+            crossAxisCount: 2,
+            children: List.generate(tutors.length, (index) {
+              return TutorTile(
+                  tutor: tutors[index], userTutor: widget.userTutor);
+            }),
+
+            //       children: ListView.builder(
+            //   itemCount: tutors.length,
+            //   itemBuilder: (context, index) {
+            //     return TutorTile(
+            //         tutor: tutors[index], userTutor: widget.userTutor);
+            //   },
+            // ),
           );
   }
 }

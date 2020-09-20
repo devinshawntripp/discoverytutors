@@ -10,17 +10,14 @@ import 'package:provider/provider.dart';
 
 class TutorClass extends StatefulWidget {
   final Tutor tutor;
-  TutorClass({Key key, this.tutor}) : super(key: key);
+  final Tutor userTutor;
+  TutorClass({Key key, this.tutor, this.userTutor}) : super(key: key);
 
   @override
   _TutorClassState createState() => _TutorClassState();
 }
 
 class _TutorClassState extends State<TutorClass> {
-  // final String tutorname;
-  // final String docid;
-  // final List<String> tutorsclasses;
-
   @override
   @override
   void initState() {
@@ -34,14 +31,15 @@ class _TutorClassState extends State<TutorClass> {
     // print(tutor.classes);
     // String tutorRate;
     final h = MediaQuery.of(context).size.height;
-    Tutor userTutor = Provider.of<Tutor>(context);
+    // Tutor userTutor = Provider.of<Tutor>(context);
 
-    return userTutor == null
+    return widget.userTutor == null
         ? Loading()
         : StreamProvider<List<ChatModel>>.value(
-            value: userTutor.chats,
-            child:
-                Consumer<List<ChatModel>>(builder: (context, userChats, child) {
+            value: widget.userTutor.chats,
+            builder: (context, child) {
+              List<ChatModel> userChats = Provider.of<List<ChatModel>>(context);
+              // return Text("lksdjfalsdf");
               return Scaffold(
                   backgroundColor: Color(0xff3DDC97),
                   appBar: AppBar(
@@ -156,7 +154,7 @@ class _TutorClassState extends State<TutorClass> {
                                       color: Color(0xffFCFCFC),
                                       fontWeight: FontWeight.w800)),
                             ),
-                            userTutor.docid == widget.tutor.docid
+                            widget.userTutor.docid == widget.tutor.docid
                                 ? Text("")
                                 : Container(
                                     height: h / 14,
@@ -167,14 +165,15 @@ class _TutorClassState extends State<TutorClass> {
                                       onPressed: () async {
                                         //pass in the user using the app as well as the user selected here
                                         //widget.tutor and the tutor provider
-                                        if (userTutor.chatWiths == null) {
+                                        if (widget.userTutor.chatWiths ==
+                                            null) {
                                           await DatabaseService().createChat(
-                                              widget.tutor, userTutor);
+                                              widget.tutor, widget.userTutor);
                                         } else {
-                                          if (!userTutor.chatWiths
+                                          if (!widget.userTutor.chatWiths
                                               .contains(widget.tutor.docid)) {
                                             await DatabaseService().createChat(
-                                                widget.tutor, userTutor);
+                                                widget.tutor, widget.userTutor);
                                           }
                                         }
 
@@ -205,6 +204,11 @@ class _TutorClassState extends State<TutorClass> {
                       ),
                     )
                   ])));
-            }));
+            },
+          );
+    // child:
+    //     Consumer<List<ChatModel>>(builder: (context, userChats, child) {
+
+    // }));
   }
 }

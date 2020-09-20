@@ -75,8 +75,8 @@ class _HomeworkListState extends State<HomeworkList> {
     }
   }
 
-  Widget buildUI(
-      ClassData classd, List<dynamic> list, User user, BuildContext context) {
+  Widget buildUI(ClassData classd, List<dynamic> list, UserTutor user,
+      BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff3DDC97),
       appBar: AppBar(
@@ -170,7 +170,7 @@ class _HomeworkListState extends State<HomeworkList> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
+    final user = Provider.of<UserTutor>(context);
 
     switch (widget.name) {
       case "Homework":
