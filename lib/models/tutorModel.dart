@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:disc_t/Screens/LoggedIn/ChatView/chat.dart';
 import 'package:disc_t/models/chatModel.dart';
 
 class Tutor {
@@ -14,17 +13,16 @@ class Tutor {
   String tutorID;
   List<String> chatIDs;
   List<String> chatWiths;
+  String profPicURL;
 
   Stream<List<ChatModel>> _chats;
 
   Stream<List<ChatModel>> get chats {
-    return Firestore.instance.collection("Chats").snapshots().map((event) =>
-        event.documents
-            .where((element) => (element
-                    .data()['tutors']
-                    .cast<String>()
-                    .contains(docid) ==
-                true))
+    return FirebaseFirestore.instance.collection("Chats").snapshots().map(
+        (event) => event.docs
+            .where((element) =>
+                (element.data()['tutors'].cast<String>().contains(docid) ==
+                    true))
             .map((e) => ChatModel.fromMap(e.data(), e.id))
             .toList());
   }
@@ -39,6 +37,7 @@ class Tutor {
 
   Tutor.fromMap(Map<String, dynamic> data, String docid) {
     this.docid = docid;
+    this.profPicURL = data['profpicurl'] ?? '';
 
     try {
       this.firstName = data['firstname'];
@@ -65,5 +64,6 @@ class Tutor {
     this.prof,
     this.chatIDs,
     this.chatWiths,
+    this.profPicURL,
   });
 }

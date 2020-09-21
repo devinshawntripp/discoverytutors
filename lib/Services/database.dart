@@ -119,6 +119,13 @@ class DatabaseService {
     return tutorsCollection.snapshots().map(_tutorsListFromSnapshot);
   }
 
+  Future uploadUserPhoto(Tutor tutor, String storageFileName) async {
+    await FirebaseFirestore.instance
+        .collection("Tutors")
+        .doc(tutor.docid)
+        .update({'profpicurl': storageFileName});
+  }
+
   void sumContributions(Tutor tutor) async {
     int totalContributions = 0;
     QuerySnapshot snapshot =
@@ -260,6 +267,7 @@ class DatabaseService {
           classes: doc.data()['classes'].cast<String>() ?? [],
           rate: doc.data()['rate'] ?? 0,
           totalVotes: doc.data()['totalvotes'] ?? 0,
+          profPicURL: doc.data()['profpicurl'] ?? '',
         );
       } else {
         return Tutor(
@@ -270,6 +278,7 @@ class DatabaseService {
           classes: [],
           rate: doc.data()['rate'] ?? 0,
           totalVotes: doc.data()['totalvotes'] ?? 0,
+          profPicURL: doc.data()['profpicurl'] ?? '',
         );
       }
     }).toList();

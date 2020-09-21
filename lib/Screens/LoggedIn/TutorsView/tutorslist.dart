@@ -26,14 +26,6 @@ class _TutorsListState extends State<TutorsList> {
               return TutorTile(
                   tutor: tutors[index], userTutor: widget.userTutor);
             }),
-
-            //       children: ListView.builder(
-            //   itemCount: tutors.length,
-            //   itemBuilder: (context, index) {
-            //     return TutorTile(
-            //         tutor: tutors[index], userTutor: widget.userTutor);
-            //   },
-            // ),
           );
   }
 }

@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:disc_t/Screens/LoggedIn/TutorsView/tutorsclasslist.dart';
 import 'package:disc_t/Screens/LoggedIn/ratinglist.dart';
+import 'package:disc_t/Services/database.dart';
 import 'package:disc_t/models/tutorModel.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 
 class EditProfile extends StatefulWidget {
   Tutor tutor;
@@ -12,6 +18,10 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  File img;
+
+  final _database = DatabaseService();
+  String imageLocation;
   // final String tutorname;
   // final String docid;
   // final List<String> tutorsclasses;
@@ -27,6 +37,17 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
+    //sets the image
+    Future<File> _setImage(BuildContext context) async {
+      img = File(await ImagePicker()
+          .getImage(source: ImageSource.gallery)
+          .then((pickedFile) => pickedFile.path));
+
+      await uploadFile();
+
+      return img;
+    }
+
     // print(tutor.classes);
     // String tutorRate;
     // final tutor = Provider.of<Tutor>(context);
@@ -47,9 +68,21 @@ class _EditProfileState extends State<EditProfile> {
               SizedBox(
                 height: 40,
               ),
-              CircleAvatar(
-                backgroundColor: Colors.blue,
-                radius: 75,
+              GestureDetector(
+                onTap: () async {
+                  await _setImage(context).then((value) {
+                    String imageName = path.basename(value.path);
+
+                    _database.uploadUserPhoto(widget.tutor, imageLocation);
+
+                    // _database.fetchClassdata;
+                  });
+                },
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage(widget.tutor.profPicURL ?? ''),
+                  // backgroundColor: Colors.blue,
+                  radius: 75,
+                ),
               ),
               SizedBox(
                 height: 20,
@@ -133,5 +166,20 @@ class _EditProfileState extends State<EditProfile> {
                 ),
               )
             ])));
+  }
+
+  uploadFile() async {
+    final StorageReference firebaseStorageRef = FirebaseStorage.instance
+        .ref()
+        .child("images/${path.basename(img.path)}");
+    StorageUploadTask task = firebaseStorageRef.putFile(img);
+
+    await task.onComplete;
+
+    await firebaseStorageRef.getDownloadURL().then((fileURL) {
+      setState(() {
+        imageLocation = fileURL;
+      });
+    });
   }
 }
