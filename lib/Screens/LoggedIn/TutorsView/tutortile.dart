@@ -10,8 +10,8 @@ class TutorTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print("some bullshit");
-    // print(tutor.classes);
+    String defaultProfPic =
+        'https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png';
 
     return Padding(
       padding: EdgeInsets.only(top: 8),
@@ -35,7 +35,7 @@ class TutorTile extends StatelessWidget {
                       margin: EdgeInsets.only(top: 10),
                       child: CircleAvatar(
                         backgroundImage: NetworkImage(tutor.profPicURL == ''
-                            ? 'https://lh3.googleusercontent.com/proxy/Bqm0w3JLMVxKcj15Zx3ZiC9l0ZK7GhZux3ihhwhdT-H8O7uO_SCQzkZBNJ9oTw2MMdVUvXCLuRUZjl9XSTqFj-t5cctQDaNaM65edDWeSVKRbYxomIAy9l_zU1AgzBuCx93pWHCGmZZ8Comc49haptCrikiaRFO4-QIfLotYAyTQ'
+                            ? defaultProfPic
                             : tutor.profPicURL),
                         radius: 25,
                         backgroundColor: Colors.blue,
@@ -49,8 +49,8 @@ class TutorTile extends StatelessWidget {
                       ),
                     ),
                     Text("Rating: ${tutor.rating}"),
-                    Text("Rating: ${tutor.totalVotes}"),
-                    Text("Rating: ${tutor.contributions}")
+                    Text("Votes: ${tutor.totalVotes}"),
+                    Text("Contributions: ${tutor.contributions}")
                   ],
                 ),
                 child: Text("")),

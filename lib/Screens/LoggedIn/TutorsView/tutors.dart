@@ -35,8 +35,6 @@ class _TutorsState extends State<Tutors> {
     final tutorData = Provider.of<Tutor>(context);
 
     var screensize = MediaQuery.of(context).size;
-    // 1059097667110-m6nkn5hrqjhf0m5n0d8l21r1ekn6hcjn.apps.googleusercontent.com
-    // com.googleusercontent.apps.1059097667110-m6nkn5hrqjhf0m5n0d8l21r1ekn6hcjn
 
     return StreamProvider<List<Tutor>>.value(
       value: DatabaseService().tutors,
@@ -148,7 +146,7 @@ class _TutorsState extends State<Tutors> {
               ),
               ListTile(
                 title: Text("Chats"),
-                trailing: Icon(Icons.person),
+                trailing: Icon(Icons.chat),
                 onTap: () {
                   Navigator.push(
                       context,
