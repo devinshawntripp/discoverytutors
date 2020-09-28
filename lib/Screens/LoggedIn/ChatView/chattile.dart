@@ -32,8 +32,8 @@ class _ChatTileState extends State<ChatTile> {
     // Tutor userTutor = Provider.of<Tutor>(context);
     List<String> tutorsWithoutUser = List<String>();
     // List<Tutor> tutorsWU = List<Tutor>();
-    print("Docid");
-    print(widget.userTutor.docid);
+    // print("Docid");
+    // print(widget.userTutor.docid);
 
     if (widget.userTutor != null) {
       tutorsWithoutUser = widget.tutors

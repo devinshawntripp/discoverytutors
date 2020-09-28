@@ -38,12 +38,11 @@ class Tutor {
   Tutor.fromMap(Map<String, dynamic> data, String docid) {
     this.docid = docid;
     this.profPicURL = data['profpicurl'] ?? '';
-
+    this.firstName = data['firstname'];
+    this.tutorID = data['tutorid'];
+    this.prof = data['prof'] ?? false;
+    this.contributions = data['Contributions'];
     try {
-      this.firstName = data['firstname'];
-      this.contributions = data['Contributions'];
-      this.tutorID = data['tutorid'];
-      this.prof = data['prof'] ?? false;
       this.rate = data['rate'];
       this.rating = data['rating'];
       this.totalVotes = data['totalvotes'];

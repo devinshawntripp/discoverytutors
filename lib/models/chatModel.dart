@@ -16,22 +16,22 @@ class ChatModel {
     final startAtTimestamp = Timestamp.fromMillisecondsSinceEpoch(
         DateTime.parse('2019-03-13 16:49:42.044').millisecondsSinceEpoch);
 
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("Chats")
-        .document(chatID)
+        .doc(chatID)
         .collection("Messages")
         .orderBy("timeStamp", descending: false)
         .startAt([startAtTimestamp])
         .limit(100)
         .snapshots()
         .map((event) =>
-            event.documents.map((e) => Message.fromMap(e.data())).toList());
+            event.docs.map((e) => Message.fromMap(e.data())).toList());
   }
 
   Future<void> sendChat(String content, String idFrom, String type) async {
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection("Chats")
-        .document(chatID)
+        .doc(chatID)
         .collection("Messages")
         .add({
       'content': content,

@@ -43,7 +43,7 @@ class _ChatState extends State<Chat> {
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
+    // _scrollController = ScrollController();
     _textEditingController.addListener(_checkInputHeight);
   }
 
@@ -181,8 +181,6 @@ class _ChatState extends State<Chat> {
                       GestureDetector(
                           child: Icon(Icons.send),
                           onTap: () {
-                            scrollToBottom();
-                            scrollToBottom();
                             widget.chatModel.sendChat(
                                 content, widget.userTutor.docid, "text");
                             setState(() {

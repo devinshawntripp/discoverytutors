@@ -76,7 +76,7 @@ class _HomeworkListState extends State<HomeworkList> {
   }
 
   Widget buildUI(ClassData classd, List<dynamic> list, UserTutor user,
-      BuildContext context) {
+      BuildContext context, String material) {
     return Scaffold(
       backgroundColor: Color(0xff3DDC97),
       appBar: AppBar(
@@ -111,6 +111,8 @@ class _HomeworkListState extends State<HomeworkList> {
                         // child: Text(""),
                         child: HomeworkRowBox(
                           homenotetest: list[index],
+                          classid: classd.classid,
+                          materialName: material,
                         ),
                         actions: <Widget>[
                           IconSlideAction(
@@ -183,7 +185,7 @@ class _HomeworkListState extends State<HomeworkList> {
             // // print(n);
             return list == null
                 ? Loading()
-                : buildUI(widget.classdata, list, user, context);
+                : buildUI(widget.classdata, list, user, context, "Homework");
           },
         );
         break;
@@ -194,7 +196,7 @@ class _HomeworkListState extends State<HomeworkList> {
             final list = Provider.of<List<Note>>(context);
             return list == null
                 ? Loading()
-                : buildUI(widget.classdata, list, user, context);
+                : buildUI(widget.classdata, list, user, context, "Notes");
           },
         );
         break;
@@ -206,7 +208,7 @@ class _HomeworkListState extends State<HomeworkList> {
 
             return list == null
                 ? Loading()
-                : buildUI(widget.classdata, list, user, context);
+                : buildUI(widget.classdata, list, user, context, "Tests");
           },
         );
         break;

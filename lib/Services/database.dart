@@ -81,8 +81,6 @@ class DatabaseService {
   }
 
   Stream<Tutor> get streamTutor {
-    //get the user classes first
-
     return _firestore
         .collection("Tutors")
         .doc(uid)
@@ -124,6 +122,28 @@ class DatabaseService {
         .collection("Tutors")
         .doc(tutor.docid)
         .update({'profpicurl': storageFileName});
+  }
+
+  Future downVote(
+      dynamic classMaterial, String collection, String classid) async {
+    return await classesCollection
+        .doc(classid)
+        .collection(collection)
+        .doc()
+        .update({
+      "upvotes": FieldValue.increment(1),
+    });
+  }
+
+  Future upVote(
+      dynamic classMaterial, String collection, String classid) async {
+    return await classesCollection
+        .doc(classid)
+        .collection(collection)
+        .doc()
+        .update({
+      "downvotes": FieldValue.increment(1),
+    });
   }
 
   void sumContributions(Tutor tutor) async {

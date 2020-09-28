@@ -1,8 +1,12 @@
+import 'package:disc_t/Services/database.dart';
 import 'package:flutter/material.dart';
 
 class HomeworkRowBox extends StatefulWidget {
   final dynamic homenotetest;
-  HomeworkRowBox({Key key, this.homenotetest}) : super(key: key);
+  final String classid;
+  final String materialName;
+  HomeworkRowBox({Key key, this.homenotetest, this.classid, this.materialName})
+      : super(key: key);
 
   @override
   _HomeworkRowBoxState createState() => _HomeworkRowBoxState();
@@ -33,9 +37,16 @@ class _HomeworkRowBoxState extends State<HomeworkRowBox> {
                 height: 100,
                 child: Column(
                   children: <Widget>[
-                    Container(
-                      height: 5,
-                      child: Icon(Icons.arrow_drop_up),
+                    InkWell(
+                      onTap: () {
+                        DatabaseService().downVote(widget.homenotetest,
+                            widget.materialName, widget.classid);
+                        setState(() {});
+                      },
+                      child: Container(
+                        height: 5,
+                        child: Icon(Icons.arrow_drop_up),
+                      ),
                     ),
                     SizedBox(
                       height: 5,

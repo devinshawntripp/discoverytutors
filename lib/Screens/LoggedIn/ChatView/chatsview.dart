@@ -1,5 +1,6 @@
 import 'package:disc_t/models/tutorModel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'chatlist.dart';
 
@@ -19,9 +20,7 @@ class _ChatsViewState extends State<ChatsView> {
       appBar: AppBar(
         backgroundColor: Color(0xff46237A),
       ),
-      body: ChatList(
-        userTutor: widget.userTutor,
-      ),
+      body: ChatList(),
     );
   }
 }
