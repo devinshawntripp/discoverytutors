@@ -1,3 +1,5 @@
+import 'package:animations/animations.dart';
+import 'package:disc_t/Screens/LoggedIn/TutorsView/tutor.dart';
 import 'package:disc_t/Screens/LoggedIn/TutorsView/tutortile.dart';
 import 'package:disc_t/models/tutorModel.dart';
 import 'package:disc_t/models/user.dart';
@@ -22,9 +24,27 @@ class _TutorsListState extends State<TutorsList> {
         ? Loading()
         : GridView.count(
             crossAxisCount: 2,
+            mainAxisSpacing: 5.0,
+            crossAxisSpacing: 5.0,
+            padding: EdgeInsets.all(5),
             children: List.generate(tutors.length, (index) {
-              return TutorTile(
-                  tutor: tutors[index], userTutor: widget.userTutor);
+              return OpenContainer(
+                closedShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0)),
+                closedColor: Colors.green,
+                closedElevation: 0,
+                openBuilder: (context, closedAction) {
+                  return TutorClass(
+                      tutor: tutors[index], userTutor: widget.userTutor);
+                },
+                closedBuilder: (context, openAction) {
+                  return TutorTile(
+                    tutor: tutors[index],
+                    userTutor: widget.userTutor,
+                    openAction: openAction,
+                  );
+                },
+              );
             }),
           );
   }

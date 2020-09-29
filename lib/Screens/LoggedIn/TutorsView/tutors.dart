@@ -7,6 +7,7 @@ import 'package:disc_t/Services/auth.dart';
 import 'package:disc_t/Services/database.dart';
 import 'package:disc_t/models/tutorModel.dart';
 import 'package:disc_t/models/user.dart';
+import 'package:animations/animations.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +40,8 @@ class _TutorsState extends State<Tutors> {
     return StreamProvider<List<Tutor>>.value(
       value: DatabaseService().tutors,
       child: Scaffold(
-        backgroundColor: Color(0xff3DDC97),
+        backgroundColor: Colors.green,
+        // backgroundColor: Color(0xff3DDC97),
         appBar: AppBar(
           backgroundColor: Color(0xff46237A),
           actions: <Widget>[

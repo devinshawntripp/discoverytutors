@@ -37,12 +37,8 @@ class TutorService {
       List<dynamic> userChatIds = chats.get('chats');
       var toRemove = [];
       await Future.forEach(userChatIds, (element) async {
-        // print(userChatIds.length);
-        // print(k);
         if (k < userChatIds.length) {
-          // print(userChatIds[k]);
           if (userChatIds[k] == chatmodel.chatID) {
-            // print(userChatIds[k]);
             toRemove.add(userChatIds[k]);
           }
         }
@@ -80,11 +76,6 @@ class TutorService {
 
       i++;
     });
-
-    //   // print(i);
-    //   // print(tutorids[i]);
-
-    //delete the chatwithsids by looping through a users chat withs
 
     return await chatsCollection.doc(chatmodel.chatID).delete();
   }

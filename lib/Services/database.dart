@@ -80,12 +80,26 @@ class DatabaseService {
             .toList());
   }
 
-  Stream<Tutor> get streamTutor {
-    return _firestore
-        .collection("Tutors")
-        .doc(uid)
-        .snapshots()
-        .map((event) => Tutor.fromMap(event.data(), event.id));
+  //transaction example
+
+  Future addGuest(guestName, eventId, eventPrice) async {
+    return await _firestore
+        .collection('eventList')
+        .doc(eventId)
+        .collection('guestList')
+        .add({'guestname': guestName}).then((newGuest) => {
+              _firestore.runTransaction((transaction) {
+                return transaction
+                    .get(_firestore.collection('eventList').doc(eventId))
+                    .then((eventDoc) {
+                  final newRevenue = eventDoc.data()['revenue'].toInt() + 15;
+
+                  return transaction.update(
+                      _firestore.collection('eventList').doc(eventId),
+                      {'revenue': newRevenue});
+                });
+              })
+            });
   }
 
   Future createHomework(
@@ -164,6 +178,10 @@ class DatabaseService {
             totalContributions++;
           }
         });
+        FirebaseFirestore.instance
+            .collection("Tutors")
+            .doc(tutor.docid)
+            .update({"Contributions": totalContributions});
       });
       await FirebaseFirestore.instance
           .collection("Classes")
@@ -171,29 +189,37 @@ class DatabaseService {
           .collection("Notes")
           .get()
           .then((value) {
-        value.documents.forEach((element) {
+        value.docs.forEach((element) {
           if (element.data()['uid'] == tutor.docid) {
             totalContributions++;
           }
         });
+        FirebaseFirestore.instance
+            .collection("Tutors")
+            .doc(tutor.docid)
+            .update({"Contributions": totalContributions});
       });
       await FirebaseFirestore.instance
           .collection("Classes")
           .doc(document.documentID)
           .collection("Tests")
           .get()
-          .then((value) {
-        value.docs.forEach((element) {
+          .then((value) async {
+        await Future.forEach(value.docs, (element) {
           if (element.data()['uid'] == tutor.docid) {
             totalContributions++;
           }
         });
+        // value.docs.forEach((element) {
+        //   if (element.data()['uid'] == tutor.docid) {
+        //     totalContributions++;
+        //   }
+        // });
+        FirebaseFirestore.instance
+            .collection("Tutors")
+            .doc(tutor.docid)
+            .update({"Contributions": totalContributions});
       });
-
-      FirebaseFirestore.instance
-          .collection("Tutors")
-          .doc(tutor.docid)
-          .update({"Contributions": totalContributions});
     });
   }
 
