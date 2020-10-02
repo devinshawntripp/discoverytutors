@@ -156,7 +156,14 @@ class _ChatState extends State<Chat> {
                         ),
                       ),
                 Container(
-                  color: Colors.grey,
+                  // color: Colors.grey,
+                  margin: EdgeInsets.all(15),
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(
+                        color: Colors.black,
+                      )),
                   child: Row(
                     children: <Widget>[
                       Expanded(

@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:disc_t/Services/auth.dart';
 import 'package:disc_t/shared/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -212,29 +215,29 @@ class _SignInState extends State<SignIn> {
                       ),
                     ),
                   ),
-                  // Container(
-                  //   margin: EdgeInsets.only(top: 10),
-                  //   width: MediaQuery.of(context).size.width / 1.2,
-                  //   height: 50,
-                  //   child: RaisedButton(
-                  //     onPressed: () async {
-                  //       await _auth.signInAnon();
-                  //     },
-                  //     child: Text(
-                  //       "Facebook",
-                  //       style: new TextStyle(
-                  //         color: Color(0xffFCFCFC),
-                  //         fontSize: 20,
-                  //         fontWeight: FontWeight.w700,
-                  //       ),
-                  //     ),
-                  //     color: Color(0xff256EFF),
-                  //     shape: RoundedRectangleBorder(
-                  //         borderRadius:
-                  //             BorderRadius.all(new Radius.circular(60))),
-                  //     elevation: 10,
-                  //   ),
-                  // ),
+                  Container(
+                    margin: EdgeInsets.only(top: 10),
+                    width: MediaQuery.of(context).size.width / 1.2,
+                    height: 50,
+                    child: RaisedButton(
+                      onPressed: () async {
+                        _auth.signInWithApple();
+                      },
+                      child: Text(
+                        "DONT USE THIS (APPLE SIGN IN)",
+                        style: new TextStyle(
+                          color: Color(0xffFCFCFC),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      color: Color(0xff256EFF),
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(new Radius.circular(60))),
+                      elevation: 10,
+                    ),
+                  ),
                   Container(
                     margin: EdgeInsets.only(top: 10),
                     width: MediaQuery.of(context).size.width / 1.2,

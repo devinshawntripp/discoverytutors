@@ -32,6 +32,7 @@ dependencies:
   smart_flare: ^0.2.9+1
   firebase_storage: ^4.0.0
   animations: ^1.1.2
+  sign_in_with_apple: ^2.5.2
 
   # Add the dependencies for any other Firebase products you want to use in your app
   # For example, to use Firebase Authentication and Cloud Firestore

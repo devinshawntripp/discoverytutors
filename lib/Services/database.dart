@@ -172,13 +172,14 @@ class DatabaseService {
           .doc(document.documentID)
           .collection("Homework")
           .get()
-          .then((value) {
-        value.docs.forEach((element) {
+          .then((value) async {
+        await Future.forEach(value.docs, (element) {
           if (element.data()['uid'] == tutor.docid) {
             totalContributions++;
           }
         });
-        FirebaseFirestore.instance
+
+        await FirebaseFirestore.instance
             .collection("Tutors")
             .doc(tutor.docid)
             .update({"Contributions": totalContributions});
@@ -188,13 +189,14 @@ class DatabaseService {
           .doc(document.documentID)
           .collection("Notes")
           .get()
-          .then((value) {
-        value.docs.forEach((element) {
+          .then((value) async {
+        await Future.forEach(value.docs, (element) {
           if (element.data()['uid'] == tutor.docid) {
             totalContributions++;
           }
         });
-        FirebaseFirestore.instance
+
+        await FirebaseFirestore.instance
             .collection("Tutors")
             .doc(tutor.docid)
             .update({"Contributions": totalContributions});
@@ -210,12 +212,8 @@ class DatabaseService {
             totalContributions++;
           }
         });
-        // value.docs.forEach((element) {
-        //   if (element.data()['uid'] == tutor.docid) {
-        //     totalContributions++;
-        //   }
-        // });
-        FirebaseFirestore.instance
+
+        await FirebaseFirestore.instance
             .collection("Tutors")
             .doc(tutor.docid)
             .update({"Contributions": totalContributions});
