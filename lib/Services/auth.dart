@@ -9,7 +9,9 @@ class AuthService {
 
   //create user obj based on firebase user
   UserTutor _userFromFirebaseUser(User user) {
-    return user != null ? UserTutor(uid: user.uid, email: user.email) : null;
+    return user != null
+        ? UserTutor(uid: user.uid, email: user.email, name: user.displayName)
+        : null;
   }
 
   //auth change user stream
@@ -42,12 +44,19 @@ class AuthService {
         ],
       );
 
+      print(appleIdCredential.givenName);
+
       final oAuthProvider = OAuthProvider('apple.com');
       final credential = oAuthProvider.credential(
           accessToken: appleIdCredential.authorizationCode,
           idToken: appleIdCredential.identityToken);
       UserCredential result = await _auth.signInWithCredential(credential);
+
       User user = result.user;
+      print("");
+      print(user.displayName);
+      await user.updateProfile(displayName: appleIdCredential.givenName);
+      print(user.displayName);
 
       return _userFromFirebaseUser(user);
     } catch (e) {

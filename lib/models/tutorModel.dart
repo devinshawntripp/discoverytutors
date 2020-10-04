@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:disc_t/models/chatModel.dart';
+import 'package:disc_t/models/user.dart';
 
 class Tutor {
   int totalVotes = 0;
@@ -27,6 +28,8 @@ class Tutor {
             .toList());
   }
 
+  //delete a users chats - will delete chat from the other user as well
+
   set chats(Stream<List<ChatModel>> s) {
     _chats = s;
   }
@@ -35,21 +38,29 @@ class Tutor {
   //   return Firestore.instance.collection("Chats");
   // }
 
-  Tutor.fromMap(Map<String, dynamic> data, String docid) {
-    this.docid = docid;
-    this.profPicURL = data['profpicurl'] ?? '';
-    this.firstName = data['firstname'];
-    this.tutorID = data['tutorid'];
-    this.prof = data['prof'] ?? false;
-    this.contributions = data['Contributions'];
-    try {
-      this.rate = data['rate'];
-      this.rating = data['rating'];
-      this.totalVotes = data['totalvotes'];
-      this.classes = data['classes'].cast<String>();
-      this.chatIDs = data['chats'].cast<String>();
-      this.chatWiths = data['chatsWith'].cast<String>();
-    } catch (error) {}
+  Tutor.fromMap(Map<String, dynamic> data, String docid, UserTutor userTutor) {
+    if (data != null) {
+      if (data.isEmpty) {
+      } else {
+        this.docid = docid;
+        this.profPicURL = data['profpicurl'] ?? '';
+        if (userTutor.name != null) {
+          print("name found");
+        } else {}
+        this.firstName = data['firstname'] ?? '';
+        this.tutorID = data['tutorid'];
+        this.prof = data['prof'] ?? false;
+        this.contributions = data['Contributions'];
+        try {
+          this.rate = data['rate'];
+          this.rating = data['rating'];
+          this.totalVotes = data['totalvotes'];
+          this.classes = data['classes'].cast<String>();
+          this.chatIDs = data['chats'].cast<String>();
+          this.chatWiths = data['chatsWith'].cast<String>();
+        } catch (error) {}
+      }
+    }
   }
 
   Tutor({

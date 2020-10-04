@@ -12,13 +12,17 @@ class TutorService {
   final tutorsCollection = FirebaseFirestore.instance.collection("Tutors");
 
   Stream<Tutor> get streamTutor {
-    return user == null
-        ? null
-        : _firestore
+    if (user == null) {
+      return null;
+    } else {
+      if (user.name == null) {
+        return _firestore
             .collection("Tutors")
             .doc(user.uid)
             .snapshots()
-            .map((event) => Tutor.fromMap(event.data(), event.id));
+            .map((event) => Tutor.fromMap(event.data(), event.id, user));
+      } else {}
+    }
   }
 
   Future deleteChat(ChatModel chatmodel, Tutor userTutor) async {

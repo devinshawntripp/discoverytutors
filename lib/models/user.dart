@@ -5,8 +5,9 @@ import 'classMaterialModel.dart';
 class UserTutor {
   final String uid;
   final String email;
+  final String name;
 
-  UserTutor({this.uid, this.email});
+  UserTutor({this.uid, this.email, this.name});
 }
 
 class Preq {

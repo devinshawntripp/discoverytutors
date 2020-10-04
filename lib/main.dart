@@ -1,6 +1,7 @@
 import 'package:disc_t/Screens/Authenticate/signinandregister.dart';
 import 'package:disc_t/Screens/RegisterDecider/registerTutor.dart';
 import 'package:disc_t/Services/tutor_service.dart';
+import 'package:disc_t/shared/loading.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +41,13 @@ class MyApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               home: user == null
                   ? SignIn()
-                  : tutor == null ? RegisterTutor() : Tutors(),
+                  : tutor == null
+                      ? RegisterTutor()
+                      : tutor.firstName == ""
+                          ? RegisterTutor()
+                          : tutor.firstName == null
+                              ? RegisterTutor()
+                              : Tutors(),
             );
           },
         );
