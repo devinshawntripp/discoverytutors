@@ -35,9 +35,9 @@ class _RegisterTutorState extends State<RegisterTutor> {
                 ? Loading()
                 : Scaffold(
                     backgroundColor: Color(0xff3DDC97),
-                    appBar: AppBar(
-                      backgroundColor: Color(0xff3DDC97),
-                    ),
+                    // appBar: AppBar(
+                    //   backgroundColor: Color(0xff3DDC97),
+                    // ),
                     body: Center(
                       child: Container(
                         height: MediaQuery.of(context).size.height * 0.7,
@@ -117,10 +117,12 @@ class _RegisterTutorState extends State<RegisterTutor> {
 
                                   if (user != null) {
                                     if (user.name != null) {
+                                      print("here1");
                                       firstname = user.name;
                                       await _database.registerTutor(
                                           user, firstname, takenClasses, _rate);
                                     } else {
+                                      print("here2");
                                       await _database.registerTutor(
                                           user, firstname, takenClasses, _rate);
                                     }

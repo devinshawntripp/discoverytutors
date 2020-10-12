@@ -1,4 +1,5 @@
 import 'package:disc_t/Screens/Authenticate/signinandregister.dart';
+import 'package:disc_t/Screens/RegisterDecider/register.dart';
 import 'package:disc_t/Screens/RegisterDecider/registerTutor.dart';
 import 'package:disc_t/Services/tutor_service.dart';
 import 'package:disc_t/shared/loading.dart';
@@ -38,17 +39,18 @@ class MyApp extends StatelessWidget {
           builder: (context, child) {
             Tutor tutor = Provider.of<Tutor>(context);
             return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              home: user == null
-                  ? SignIn()
-                  : tutor == null
-                      ? RegisterTutor()
-                      : tutor.firstName == ""
-                          ? RegisterTutor()
-                          : tutor.firstName == null
-                              ? RegisterTutor()
-                              : Tutors(),
-            );
+                debugShowCheckedModeBanner: false,
+                home: user == null
+                    ? SignIn()
+                    : tutor == null
+                        ? RegisterTutor()
+                        : tutor.firstName == null ? RegisterTutor() : Tutors()
+                // : tutor.firstName == ""
+                //     ? RegisterTutor()
+                //     : tutor.firstName == null
+                //         ? RegisterTutor()
+                //         : Tutors(),
+                );
           },
         );
       },

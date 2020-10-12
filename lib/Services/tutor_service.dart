@@ -13,15 +13,15 @@ class TutorService {
 
   Stream<Tutor> get streamTutor {
     if (user == null) {
+      print("HERE14");
       return null;
     } else {
-      if (user.name == null) {
-        return _firestore
-            .collection("Tutors")
-            .doc(user.uid)
-            .snapshots()
-            .map((event) => Tutor.fromMap(event.data(), event.id, user));
-      } else {}
+      print("HERE 28");
+      return _firestore
+          .collection("Tutors")
+          .doc(user.uid)
+          .snapshots()
+          .map((event) => Tutor.fromMap(event.data(), event.id, user));
     }
   }
 

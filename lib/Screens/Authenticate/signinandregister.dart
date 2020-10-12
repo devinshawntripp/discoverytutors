@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:disc_t/Services/auth.dart';
 import 'package:disc_t/shared/loading.dart';
 import 'package:flutter/material.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -112,11 +112,26 @@ class _SignInState extends State<SignIn> {
                                             : null,
                                         // style: new TextStyle(color: Colors.white),
                                         decoration: InputDecoration(
-                                          fillColor: Colors.white,
-                                          filled: true,
-                                          // hintStyle: new TextStyle(color: Colors.white),
-                                          hintText: "Email:",
-                                        ),
+                                            enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.white),
+                                            ),
+                                            focusedBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.white),
+                                            ),
+                                            border: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.white),
+                                            ),
+
+                                            // fillColor: Colors.white,
+                                            // filled: true,
+                                            // hintStyle: new TextStyle(color: Colors.white),
+                                            hintText: "Email:",
+                                            hintStyle:
+                                                TextStyle(color: Colors.white)),
+
                                         onChanged: (val) {
                                           setState(() => email = val);
                                         },
@@ -132,10 +147,24 @@ class _SignInState extends State<SignIn> {
                                         // style: new TextStyle(color: Colors.white),
                                         obscureText: true,
                                         decoration: InputDecoration(
-                                          fillColor: Colors.white,
-                                          filled: true,
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.white),
+                                          ),
+                                          focusedBorder: UnderlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.white),
+                                          ),
+                                          border: UnderlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.white),
+                                          ),
+                                          // fillColor: Colors.white,
+                                          // filled: true,
                                           // hintStyle: new TextStyle(color: Colors.white),
                                           hintText: "Password:",
+                                          hintStyle:
+                                              TextStyle(color: Colors.white),
                                         ),
                                         onChanged: (val) {
                                           setState(() {
@@ -248,15 +277,24 @@ class _SignInState extends State<SignIn> {
                         height: 50,
                         child: RaisedButton(
                           onPressed: () async {
-                            _auth.signInWithApple();
+                            await _auth.signInWithApple();
                           },
-                          child: Text(
-                            "Apple Sign In",
-                            style: new TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              FaIcon(FontAwesomeIcons.apple),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Sign in With Apple",
+                                style: new TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
                           ),
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
@@ -273,13 +311,25 @@ class _SignInState extends State<SignIn> {
                           onPressed: () async {
                             await _auth.signInWithGoogle();
                           },
-                          child: Text(
-                            "Google",
-                            style: new TextStyle(
-                              color: Color(0xffFCFCFC),
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              FaIcon(
+                                FontAwesomeIcons.google,
+                                color: Colors.white,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Sign in with Google",
+                                style: new TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
                           ),
                           color: Color(0xff256EFF),
                           shape: RoundedRectangleBorder(

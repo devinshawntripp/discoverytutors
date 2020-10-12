@@ -44,6 +44,7 @@ class AuthService {
         ],
       );
 
+      print(appleIdCredential.familyName);
       print(appleIdCredential.givenName);
 
       final oAuthProvider = OAuthProvider('apple.com');
@@ -53,9 +54,9 @@ class AuthService {
       UserCredential result = await _auth.signInWithCredential(credential);
 
       User user = result.user;
-      print("");
-      print(user.displayName);
-      await user.updateProfile(displayName: appleIdCredential.givenName);
+      await user.updateProfile(
+          displayName:
+              appleIdCredential.givenName + " " + appleIdCredential.familyName);
       print(user.displayName);
 
       return _userFromFirebaseUser(user);
